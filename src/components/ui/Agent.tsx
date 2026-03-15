@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import JSZip from 'jszip';
 
 interface AgentProps {
    fcsUrl: string;
@@ -15,47 +14,74 @@ type AnimationOptions = {
    nextOptions?: AnimationOptions;
 };
 
-const extractFramesAndRemoveBackground = async (blob: Blob): Promise<string> => {
-   return new Promise<string>((resolve, reject) => {
-      const img = new Image();
-      img.onload = () => {
-         const canvas = document.createElement('canvas');
-         canvas.width = img.width;
-         canvas.height = img.height;
-         const ctx = canvas.getContext('2d', { willReadFrequently: true });
+type AnimationMap = Record<string, string[]>;
 
-         if (!ctx) {
-            reject(new Error('Failed to get 2d context for Agent'));
-            return;
+const STARTUP_ANIMATIONS = ['Show', 'RestPose', 'Greet'];
+const STARTUP_FPS = 10;
+const STARTUP_DELAY = 230;
+
+const processAnimationFrames = async (
+   folderName: string,
+   animName: string,
+   frames: string[],
+   assetVersion?: string,
+): Promise<string[]> => {
+   const isBase64 = frames.length > 0 && frames[0].startsWith('data:image');
+   if (isBase64) {
+      return frames;
+   }
+
+   const versionSuffix = assetVersion ? `?v=${encodeURIComponent(assetVersion)}` : '';
+   const hasLegacyFrames = frames.some((frameFile) => !frameFile.toLowerCase().endsWith('.png'));
+
+   if (hasLegacyFrames) {
+      throw new Error('[AGENT] Manifest contains legacy non-PNG frames. Run pnpm run extract-agent.');
+   }
+
+   return frames.map((frameFile) => `${folderName}/${animName}/${frameFile}${versionSuffix}`);
+};
+
+const loadAgentAnimations = async (fcsUrl: string): Promise<AnimationMap> => {
+   const folderName = fcsUrl.replace(/\.[^/.]+$/, '');
+   const manifestUrl = `${folderName}/manifest.json`;
+   const manifestRes = await fetch(manifestUrl, { cache: 'no-store' });
+
+   if (!manifestRes.ok) {
+      throw new Error(`[AGENT] Failed to load manifest at ${manifestUrl} (status ${manifestRes.status}).`);
+   }
+
+   console.log(`[AGENT] Loading optimized assets from ${folderName}`);
+   const manifest = await manifestRes.json();
+   const allAnimations = manifest.animations as Record<string, string[]>;
+   const assetVersion = typeof manifest.version === 'string' ? manifest.version : undefined;
+   const loadedAnimations: AnimationMap = {};
+
+   const loadAnimation = async (animName: string) => {
+      if (loadedAnimations[animName]) return;
+      const frames = allAnimations[animName];
+      if (!frames) return;
+
+      loadedAnimations[animName] = await processAnimationFrames(folderName, animName, frames, assetVersion);
+   };
+
+   await Promise.all(STARTUP_ANIMATIONS.map((animName) => loadAnimation(animName)));
+
+   const remainingAnims = Object.keys(allAnimations).filter((name) => !STARTUP_ANIMATIONS.includes(name));
+   void (async () => {
+      for (let i = 0; i < remainingAnims.length; i++) {
+         await loadAnimation(remainingAnims[i]);
+
+         if (i % 2 === 0) {
+            await new Promise<void>((resolve) => {
+               window.setTimeout(resolve, 0);
+            });
          }
+      }
 
-         ctx.drawImage(img, 0, 0);
-         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-         const data = imageData.data;
+      console.log('[AGENT] All animations loaded in background');
+   })();
 
-         // the first pixel (top-left) determines the background color to become transparent
-         const [bgR, bgG, bgB] = data;
-
-         for (let i = 0; i < data.length; i += 4) {
-            if (data[i] === bgR && data[i + 1] === bgG && data[i + 2] === bgB) {
-               data[i + 3] = 0; // set alpha to 0 (transparent)
-            }
-         }
-
-         ctx.putImageData(imageData, 0, 0);
-
-         canvas.toBlob((newBlob) => {
-            if (!newBlob) {
-               reject(new Error('Failed to create blob from canvas'));
-               return;
-            }
-            resolve(URL.createObjectURL(newBlob));
-         }, 'image/png');
-      };
-
-      img.onerror = reject;
-      img.src = URL.createObjectURL(blob);
-   });
+   return loadedAnimations;
 };
 
 const ROVER_STORY = [
@@ -159,7 +185,7 @@ export default function Agent({ fcsUrl, fps = 10, initialX, initialY }: AgentPro
          clearTimeout(idleTimerRef.current);
       }
 
-      const nextIdleTime = Math.floor(Math.random() * 10000) + 5000; // 5s to 15s
+      const nextIdleTime = Math.floor(Math.random() * 10000) + 5000;
 
       idleTimerRef.current = window.setTimeout(() => {
          const isIdle = currentAnimRef.current === 'RestPose' || currentAnimRef.current === null;
@@ -196,123 +222,16 @@ export default function Agent({ fcsUrl, fps = 10, initialX, initialY }: AgentPro
    useEffect(() => {
       let isMounted = true;
 
-      const fetchAndParseFcs = async () => {
-         try {
-            // Try loading from pre-extracted folder first (Optimization)
-            const folderName = fcsUrl.replace(/\.[^/.]+$/, '');
-            const manifestUrl = `${folderName}/manifest.json`;
-
-            try {
-               const manifestRes = await fetch(manifestUrl);
-               if (manifestRes.ok) {
-                  console.log(`[AGENT] Loading optimized assets from ${folderName}`);
-                  const manifest = await manifestRes.json();
-                  const animEntries = Object.entries(manifest.animations as Record<string, string[]>);
-
-                  // Helper to process a single animation
-                  const processAnimation = async (animName: string, frames: string[]) => {
-                     const framePromises = frames.map(async (frameFile) => {
-                        const frameUrl = `${folderName}/${animName}/${frameFile}`;
-                        const frameRes = await fetch(frameUrl);
-                        const blob = await frameRes.blob();
-                        return extractFramesAndRemoveBackground(blob);
-                     });
-                     return Promise.all(framePromises);
-                  };
-
-                  // 1. Prioritize essential animations
-                  const priorityAnims = [
-                     'Show',
-                     'RestPose',
-                     'Greet',
-                     'Searching',
-                     'Thinking',
-                     'LookUp',
-                     'Pleased',
-                     'Acknowledge',
-                  ];
-
-                  for (const animName of priorityAnims) {
-                     if (manifest.animations[animName]) {
-                        animationsRef.current[animName] = await processAnimation(
-                           animName,
-                           manifest.animations[animName],
-                        );
-                     }
-                  }
-
-                  if (isMounted) {
-                     setIsReady(true);
-                     console.log('[AGENT] Ready (Priority Anims Loaded)');
-                  }
-
-                  // 2. Load the rest in the background
-                  const remainingAnims = animEntries.filter(([name]) => !priorityAnims.includes(name));
-
-                  (async () => {
-                     for (const [animName, frames] of remainingAnims) {
-                        if (!isMounted) break;
-                        animationsRef.current[animName] = await processAnimation(animName, frames);
-                     }
-                     if (isMounted) {
-                        console.log('[AGENT] All Animations Loaded in Background');
-                     }
-                  })();
-
-                  return;
-               }
-            } catch (e) {
-               console.log('[AGENT] Optimized folder error, falling back to ZIP loading:', e);
-            }
-
-            // Fallback: Standard ZIP loading
-            const response = await fetch(fcsUrl);
-            if (!response.ok) throw new Error('Failed to fetch FCS file');
-
-            const arrayBuffer = await response.arrayBuffer();
-            const zip = await JSZip.loadAsync(arrayBuffer);
-
-            const tempAnimations: Record<string, { index: number; url: string }[]> = {};
-            const processingPromises: Promise<void>[] = [];
-
-            Object.keys(zip.files).forEach((fileName, index) => {
-               if (!fileName.toLowerCase().endsWith('.bmp')) return;
-
-               const [animationName] = fileName.split('/');
-               if (!animationName) return;
-
-               const fileData = zip.files[fileName];
-
-               const processFile = async () => {
-                  const blob = await fileData.async('blob');
-                  const transparentImageUrl = await extractFramesAndRemoveBackground(blob);
-
-                  if (!tempAnimations[animationName]) tempAnimations[animationName] = [];
-                  tempAnimations[animationName].push({ index, url: transparentImageUrl });
-               };
-
-               processingPromises.push(processFile());
-            });
-
-            await Promise.all(processingPromises);
-
-            const parsedAnimations: Record<string, string[]> = {};
-            Object.keys(tempAnimations).forEach((animName) => {
-               const sortedFrames = tempAnimations[animName].sort((a, b) => a.index - b.index);
-               parsedAnimations[animName] = sortedFrames.map((frame) => frame.url);
-            });
-
-            if (isMounted) {
-               animationsRef.current = parsedAnimations;
-               setIsReady(true);
-               console.log('[AGENT] Available Animations (ZIP Fallback):', Object.keys(parsedAnimations));
-            }
-         } catch (error) {
+      loadAgentAnimations(fcsUrl)
+         .then((loadedAnimations) => {
+            if (!isMounted) return;
+            animationsRef.current = loadedAnimations;
+            setIsReady(true);
+            console.log('[AGENT] Ready (startup animations loaded)');
+         })
+         .catch((error) => {
             console.error('Agent FCS processing error:', error);
-         }
-      };
-
-      fetchAndParseFcs();
+         });
 
       return () => {
          isMounted = false;
@@ -325,7 +244,7 @@ export default function Agent({ fcsUrl, fps = 10, initialX, initialY }: AgentPro
          e.stopPropagation();
          if (!isStoryActiveRef.current) return;
 
-         setIsBubbleVisible(false); // Fade out
+         setIsBubbleVisible(false);
 
          setTimeout(() => {
             setStoryIndex((prev) => {
@@ -337,7 +256,7 @@ export default function Agent({ fcsUrl, fps = 10, initialX, initialY }: AgentPro
                   return 0;
                } else {
                   setStoryIndex(nextIndex);
-                  setIsBubbleVisible(true); // Fade back in
+                  setIsBubbleVisible(true);
                   playAnimation(ROVER_STORY[nextIndex].anim, {
                      fps: 10,
                      loop: false,
@@ -347,7 +266,7 @@ export default function Agent({ fcsUrl, fps = 10, initialX, initialY }: AgentPro
                   return nextIndex;
                }
             });
-         }, 300); // Wait for fade out animation
+         }, 300);
       },
       [playAnimation],
    );
@@ -355,12 +274,14 @@ export default function Agent({ fcsUrl, fps = 10, initialX, initialY }: AgentPro
    useEffect(() => {
       if (!isReady) return;
 
-      // Initial show animation
+      const showFrames = animationsRef.current.Show?.length ?? 0;
+      const showDurationMs = showFrames > 0 ? Math.ceil((showFrames / STARTUP_FPS) * 1000) : 900;
+
       playAnimation('Show', {
-         fps: 10,
+         fps: STARTUP_FPS,
          loop: false,
          nextAnim: 'RestPose',
-         nextOptions: { fps: 10, loop: true },
+         nextOptions: { fps: STARTUP_FPS, loop: true },
       });
 
       const storyStartTimer = window.setTimeout(() => {
@@ -368,12 +289,12 @@ export default function Agent({ fcsUrl, fps = 10, initialX, initialY }: AgentPro
          setStoryIndex(0);
          setIsBubbleVisible(true);
          playAnimation(ROVER_STORY[0].anim, {
-            fps: 10,
+            fps: STARTUP_FPS,
             loop: false,
             nextAnim: 'RestPose',
-            nextOptions: { fps: 10, loop: true },
+            nextOptions: { fps: STARTUP_FPS, loop: true },
          });
-      }, 2000);
+      }, showDurationMs + STARTUP_DELAY);
 
       resetIdleTimer();
 
@@ -455,13 +376,15 @@ export default function Agent({ fcsUrl, fps = 10, initialX, initialY }: AgentPro
             left: `${position.x}px`,
             top: `${position.y}px`,
             zIndex: 9999,
-            display: isReady ? 'block' : 'none',
+            display: 'block',
+            opacity: isReady ? 1 : 0,
             width: '80px',
             height: '80px',
+            pointerEvents: isReady ? 'auto' : 'none',
+            transition: 'opacity 220ms ease-out',
             cursor: isDraggingState ? 'grabbing' : 'grab',
          }}
       >
-         {/* Speech Bubble */}
          <div
             onClick={handleBubbleClick}
             className={`absolute bottom-23.75 right-8.75 w-40 p-2.5 bg-[#fffde1] rounded-xl shadow-[2px_2px_3px_0px_rgba(0,0,0,0.50)] border border-black flex justify-center items-center cursor-pointer transition-all duration-300 transform ${isBubbleVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}
@@ -471,9 +394,7 @@ export default function Agent({ fcsUrl, fps = 10, initialX, initialY }: AgentPro
                {isStoryActive ? ROVER_STORY[storyIndex].text : "Woof! Hello there, I'm Rover!"}
             </div>
 
-            {/* Bubble Tail (Outer Black) */}
             <div className="absolute -bottom-2.5 right-2.5 w-0 h-0 border-t-10 border-t-black border-l-10 border-l-transparent" />
-            {/* Bubble Tail (Inner Yellow) */}
             <div className="absolute -bottom-2 right-2.75 w-0 h-0 border-t-[9px] border-t-[#fffde1] border-l-[9px] border-l-transparent z-10" />
          </div>
 

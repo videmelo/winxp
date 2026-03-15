@@ -1,11 +1,10 @@
-import ProgramIcon from '../../ui/ProgramIcon';
 import Dropdown from './Dropdown';
 
 export default function ControlPanel() {
    return (
       <div className="flex flex-col flex-1">
          <div className="flex flex-col">
-            <ul className="flex h-[22px]">
+            <ul className="flex h-5.5">
                <li className="label-tahoma hover:text-white hover:bg-bg-selection py-[2.75px] px-2">File</li>
                <li className="label-tahoma hover:text-white hover:bg-bg-selection py-[2.75px] px-2">Edit</li>
                <li className="label-tahoma hover:text-white hover:bg-bg-selection py-[2.75px] px-2">Display</li>
@@ -27,7 +26,7 @@ export default function ControlPanel() {
                   <img src="/assets/images/logo-windows.png" className="size-5 pixelated" />
                </li>
             </ul>
-            <ul className="flex h-[38px]">
+            <ul className="flex h-9.5">
                <li className="flex-1 xp-inset-border xp-inset-border-left xp-inset-border-top"></li>
                <li className="flex-1 xp-inset-border xp-inset-border-left xp-inset-border-top"></li>
                <li className="flex-1 xp-inset-border xp-inset-border-left xp-inset-border-top"></li>

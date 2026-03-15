@@ -16,7 +16,7 @@ const sizeClasses: Record<IconSize, string> = {
 };
 
 const items = new Map<string, ProgramMetadata | Folder>(
-   [...programsMetadata, ...folders].map((item) => [item.id, item])
+   [...programsMetadata, ...folders].map((item) => [item.id, item]),
 );
 
 function ProgramIcon({ id, size, className = '' }: ProgramIconProps) {

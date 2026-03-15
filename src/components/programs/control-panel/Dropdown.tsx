@@ -43,11 +43,8 @@ export default function Dropdown() {
 
    const resolvedTree = useMemo(() => resolveTree(SYSTEM_TREE), []);
    const selectedNode = useMemo(() => findNodeById(resolvedTree, selectedId), [resolvedTree, selectedId]);
-   const [addressValue, setAddressValue] = useState(selectedNode?.label ?? 'Desktop');
-
-   useEffect(() => {
-      setAddressValue(selectedNode?.label ?? 'Desktop');
-   }, [selectedNode]);
+   const selectedLabel = selectedNode?.label ?? 'Desktop';
+   const [addressValue, setAddressValue] = useState(selectedLabel);
 
    useEffect(() => {
       if (!isOpen) return;
@@ -79,6 +76,7 @@ export default function Dropdown() {
 
    function handleSelectNode(node: AddressNode, hasChildren: boolean) {
       setSelectedId(node.id);
+      setAddressValue(node.label);
 
       if (hasChildren) {
          toggleExpanded(node.id);
@@ -95,7 +93,10 @@ export default function Dropdown() {
       >
          <div
             className={`flex-1 m-px inline-flex justify-start items-center text-left ${isOpen ? 'bg-bg-selection' : ''}`}
-            onClick={() => setIsOpen(true)}
+            onClick={() => {
+               setAddressValue(selectedLabel);
+               setIsOpen(true);
+            }}
          >
             <span className="self-stretch p-px inline-flex justify-start items-center gap-1 w-full">
                {selectedNode?.iconId ? <ProgramIcon id={selectedNode.iconId} size="sm" /> : null}
@@ -104,9 +105,12 @@ export default function Dropdown() {
                ) : null}
                <input
                   ref={inputRef}
-                  value={addressValue}
+                  value={isOpen ? addressValue : selectedLabel}
                   onChange={(event) => setAddressValue(event.target.value)}
-                  onFocus={() => setIsOpen(true)}
+                  onFocus={() => {
+                     setAddressValue(selectedLabel);
+                     setIsOpen(true);
+                  }}
                   readOnly={!isOpen}
                   className={`label-tahoma w-full bg-transparent border-none outline-none ${isOpen ? 'text-white' : 'text-black'}`}
                />
@@ -117,7 +121,15 @@ export default function Dropdown() {
             type="button"
             aria-label="Toggle address dropdown"
             className={`ui-dropdownmenu-switch-btn ${isOpen ? 'ui-dropdownmenu-switch-btn--up' : ''}`}
-            onClick={() => setIsOpen((current) => !current)}
+            onClick={() => {
+               setIsOpen((current) => {
+                  const nextIsOpen = !current;
+                  if (nextIsOpen) {
+                     setAddressValue(selectedLabel);
+                  }
+                  return nextIsOpen;
+               });
+            }}
          />
 
          {isOpen && (
