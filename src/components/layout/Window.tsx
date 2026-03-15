@@ -59,33 +59,40 @@ function TitleBar({ win }: { win: WindowState }) {
 
    return (
       <div
-         className={`title-bar-chrome p-1 flex gap-1 items-center justify-between overflow-hidden`}
+         className={`xp-window-title-bar-chrome p-1 flex gap-1 items-center justify-between overflow-hidden`}
          onPointerDown={onPointerDown}
          onDoubleClick={() => hasMaximize && toggleMaximize(win.id)}
       >
-         <div className="title-bar-children flex items-center relative gap-1 min-w-0 flex-1">
+         <div className="xp-window-title-bar-children flex items-center relative gap-1 min-w-0 flex-1">
             <ProgramIcon id={win.icon} size="sm" />
             <span className="window-title text-xp-white truncate">{win.title}</span>
          </div>
-         <div className="title-bar-children flex gap-1 shrink-0">
-            {hasHelp && <button className="xp-btn-blue xp-icon-help" onPointerDown={(e) => e.stopPropagation()} />}
+         <div className="xp-window-title-bar-children flex gap-1 shrink-0">
+            {hasHelp && (
+               <button
+                  className="xp-window-controls-btn-blue xp-window-controls-icon-help"
+                  onPointerDown={(e) => e.stopPropagation()}
+               />
+            )}
             {hasMinimize && (
                <button
-                  className="xp-btn-blue xp-icon-minimize"
+                  className="xp-window-controls-btn-blue xp-window-controls-icon-minimize"
                   onPointerDown={(e) => e.stopPropagation()}
                   onClick={() => minimizeWindow(win.id)}
                />
             )}
             {hasMaximize && (
                <button
-                  className={`xp-btn-blue ${win.status === 'maximized' ? 'xp-icon-reduce' : 'xp-icon-maximize'}`}
+                  className={`xp-window-controls-btn-blue ${
+                     win.status === 'maximized' ? 'xp-window-controls-icon-reduce' : 'xp-window-controls-icon-maximize'
+                  }`}
                   onPointerDown={(e) => e.stopPropagation()}
                   onClick={() => toggleMaximize(win.id)}
                />
             )}
             {hasClose && (
                <button
-                  className="xp-btn-red xp-icon-close"
+                  className="xp-window-controls-btn-red xp-window-controls-icon-close"
                   onPointerDown={(e) => e.stopPropagation()}
                   onClick={() => closeWindow(win.id)}
                />
@@ -110,7 +117,7 @@ function Window({ windowId, children }: WindowProps) {
 
    return (
       <div
-         className={`absolute flex flex-col window-frame ${!win.isActive ? 'inactive' : ''}`}
+         className={`absolute flex flex-col xp-window-frame ${!win.isActive ? 'inactive' : ''}`}
          style={{
             left: win.position.x,
             top: win.position.y,
@@ -123,7 +130,7 @@ function Window({ windowId, children }: WindowProps) {
          }}
       >
          <TitleBar win={win} />
-         <div className="window-content flex-1 overflow-auto bg-bg-default-window">
+         <div className="xp-window-content flex-1 overflow-auto bg-bg-default-window">
             {win.exe ? <win.exe /> : children}
          </div>
          {!isMaximized && win.resizable && <ResizeHandles windowId={win.id} />}

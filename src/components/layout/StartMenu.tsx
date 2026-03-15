@@ -37,8 +37,8 @@ const items = new Map(
 function Header({ username, avatarUrl }: { username: string; avatarUrl: string }) {
    return (
       <div className="w-full h-16 flex p-1.5 items-center gap-2">
-         <img src={avatarUrl} alt="Avatar" className="startmenu-avatar size-13" />
-         <p className="startmenu-username">{username}</p>
+         <img src={avatarUrl} alt="Avatar" className="xp-startmenu-avatar size-13" />
+         <p className="xp-startmenu-username">{username}</p>
       </div>
    );
 }
@@ -68,7 +68,7 @@ function LeftPane({
             </div>
          ))}
 
-         {pinneds.length > 0 ? <span className="gradient-line m-px" /> : null}
+         {pinneds.length > 0 ? <span className="xp-startmenu-gradient-line m-px" /> : null}
 
          {recents.map((program, index) => (
             <div
@@ -83,10 +83,10 @@ function LeftPane({
             </div>
          ))}
 
-         <span className="gradient-line m-px" />
+         <span className="xp-startmenu-gradient-line m-px" />
          <div className="flex justify-end items-center self-stretch gap-2 p-0.5 hover:bg-xp-blue-selection w-full hover:text-white!">
             <p className="label-bold-tahoma">All Programs</p>
-            <span className="all-programs-btn" />
+            <span className="xp-startmenu-all-programs-btn" />
          </div>
       </div>
    );
@@ -126,8 +126,8 @@ function RightPane({ sections, onLaunch }: { sections: RightPaneItem[][]; onLaun
 
 function Footer() {
    const actions = [
-      { label: 'Log off', btnClass: 'xp-btn-yellow xp-icon-logoff' },
-      { label: 'Turn off', btnClass: 'xp-btn-red xp-icon-poweroff' },
+      { label: 'Log off', btnClass: 'xp-window-controls-btn-yellow xp-window-controls-icon-logoff' },
+      { label: 'Turn off', btnClass: 'xp-window-controls-btn-red xp-window-controls-icon-poweroff' },
    ];
 
    return (
@@ -155,13 +155,18 @@ function StartMenu({
             label: item?.label || '',
          };
       }),
-      recent: ['windows-media-player', 'microsoft-news', 'windows-messenger', 'windows-tour', 'transfer-wizzard'].map(
-         (id) => ({
-            id,
-            icon: items.get(id)?.icons.md || '',
-            name: items.get(id)?.name || '',
-         }),
-      ),
+      recent: [
+         'windows-media-player',
+         'microsoft-news',
+         'windows-messenger',
+         'windows-tour',
+         'transfer-wizzard',
+         'component-preview',
+      ].map((id) => ({
+         id,
+         icon: items.get(id)?.icons.md || '',
+         name: items.get(id)?.name || '',
+      })),
    },
    rightItems = [
       ['my-documents', 'my-recent-documents', 'my-pictures', 'my-music', 'my-computer'].map((id) => ({
@@ -187,11 +192,11 @@ function StartMenu({
    const handleLaunch = onLaunch ?? ((programId: string) => openProgram(programId));
 
    return (
-      <div className="startmenu flex flex-col rounded-t-md border border-[#215CC5] w-95 h-120">
+      <div className="xp-startmenu flex flex-col rounded-t-md border border-[#215CC5] w-95 h-120">
          <Header username={user.name} avatarUrl={user.avatar} />
          <div className="flex w-full h-full">
-            <div className="startmenu-launcher flex flex-col w-full relative border-t mx-px border-t-[#1964CD]">
-               <span className="startmenu-gradient absolute w-full h-0.5" />
+            <div className="xp-startmenu-launcher flex flex-col w-full relative border-t mx-px border-t-[#1964CD]">
+               <span className="xp-startmenu-gradient absolute w-full h-0.5" />
                <div className="flex w-full h-full">
                   <LeftPane pinneds={leftItems.pinned} recents={leftItems.recent} onLaunch={handleLaunch} />
                   <RightPane sections={rightItems} onLaunch={handleLaunch} />

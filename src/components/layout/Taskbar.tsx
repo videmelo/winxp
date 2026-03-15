@@ -14,7 +14,7 @@ interface TaskbarTabProps {
 function TaskbarTab({ icon, label, isActive, onClick }: TaskbarTabProps) {
    return (
       <div
-         className={`program-tab ${
+         className={`xp-taskbar-program-tab ${
             isActive ? 'active' : ''
          } flex items-center gap-0.75 px-2.5 py-1 pr-3.75 cursor-pointer text-white w-40 min-w-9 h-6.25`}
          onClick={onClick}
@@ -27,7 +27,10 @@ function TaskbarTab({ icon, label, isActive, onClick }: TaskbarTabProps) {
 
 function StartButton({ onClick }: { onClick?: () => void }) {
    return (
-      <div className="start-button flex items-center gap-1.5 cursor-pointer h-7.5 w-24.75 relative" onClick={onClick}>
+      <div
+         className="xp-taskbar-start-button flex items-center gap-1.5 cursor-pointer h-7.5 w-24.75 relative"
+         onClick={onClick}
+      >
          <img src="src/assets/icons/system/windows-flag-16.png" className="pixelated ml-2.5" alt="Start" />
          <span className="italic font-bold text-[18px] leading-5.5 text-white">start</span>
       </div>
@@ -48,8 +51,8 @@ function SystemTray() {
    }, []);
 
    return (
-      <div className="system-tray flex justify-end items-center p-0.75 pr-2 pl-2.75 gap-px h-7.5 relative">
-         <span className="system-tray-overflow absolute -left-2.25" />
+      <div className="xp-taskbar-system-tray flex justify-end items-center p-0.75 pr-2 pl-2.75 gap-px h-7.5 relative">
+         <span className="xp-taskbar-system-tray-overflow absolute -left-2.25" />
          <img src="src/assets/icons/system/sound-16.png" className="pixelated cursor-pointer" alt="Volume" />
          <img
             src="src/assets/icons/network/network-favorites-16.png"
@@ -88,7 +91,7 @@ function Taskbar() {
    };
 
    return (
-      <div className="taskbar absolute bottom-0 left-0 w-full h-7.5 flex justify-between items-center z-9999">
+      <div className="xp-taskbar absolute bottom-0 left-0 w-full h-7.5 flex justify-between items-center z-9999">
          <div ref={containerRef} className="relative flex-1 min-w-0">
             <div className="absolute bottom-7.5 left-0">
                {startMenuOpen ? (

@@ -1,4 +1,5 @@
 import type React from 'react';
+import ComponentPreview from '../components/programs/component-preview/ComponentPreview';
 
 export type TitleBarButton = 'minimize' | 'maximize' | 'close' | 'help';
 
@@ -177,6 +178,21 @@ export const programs: Program[] = [
          defaultStatus: 'normal',
          titleBarButtons: ['help', 'close'],
          resizable: false,
+      },
+   },
+   {
+      id: 'component-preview',
+      name: 'Component Preview',
+      label: 'Dev Tools',
+      icons: {
+         lg: 'src/assets/icons/ui/help-48.png',
+         sm: 'src/assets/icons/ui/help-16.png',
+         md: 'src/assets/icons/ui/help-32.png',
+      },
+      exe: ComponentPreview,
+      windowConfig: {
+         defaultSize: { width: 700, height: 500 },
+         minSize: { width: 400, height: 300 },
       },
    },
 ];

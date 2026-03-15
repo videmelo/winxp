@@ -1,0 +1,16 @@
+@utility pixelated {
+   image-rendering: -moz-crisp-edges;
+   image-rendering: -o-pixelated;
+   image-rendering: -webkit-optimize-contrast;
+   image-rendering: pixelated;
+   -ms-interpolation-mode: nearest-neighbor;
+   image-rendering: crisp-edges;
+}
+
+svg {
+   @apply pixelated;
+}
+
+svg * {
+   shape-rendering: crispEdges;
+}

@@ -1,0 +1,154 @@
+@layer base {
+   *,
+   *::before,
+   *::after {
+      @apply select-none;
+      -webkit-font-smoothing: none;
+      -moz-osx-font-smoothing: unset;
+      font-smooth: never;
+      text-rendering: optimizeSpeed;
+   }
+
+   body {
+      @apply font-tahoma antialiased bg-cover bg-center;
+      background-image: url('../assets/images/walpaper.jpg');
+   }
+
+   ::-webkit-scrollbar {
+      width: 17px;
+      height: 17px;
+   }
+
+   ::-webkit-scrollbar-track:vertical {
+      background-image: svg-load('./assets/svgs/scrollbar-vertical/track-idle.svg');
+   }
+
+   ::-webkit-scrollbar-track:vertical:active {
+      background-image: svg-load('./assets/svgs/scrollbar-vertical/track-pressed.svg');
+   }
+
+   ::-webkit-scrollbar-track:horizontal {
+      background-image: svg-load('./assets/svgs/scrollbar-horizontal/track-idle.svg');
+   }
+
+   ::-webkit-scrollbar-track:horizontal:active {
+      background-image: svg-load('./assets/svgs/scrollbar-horizontal/track-pressed.svg');
+   }
+
+   ::-webkit-scrollbar-thumb {
+      min-height: 17px;
+      min-width: 17px;
+      border: 3px solid transparent;
+      background-repeat: no-repeat, no-repeat;
+      background-position: center, center;
+      background-size:
+         auto,
+         100% 100%;
+   }
+
+   ::-webkit-scrollbar-thumb:vertical {
+      border-image: svg-load('./assets/svgs/scrollbar-vertical/thumb-v/idle.svg') 3;
+      background-image:
+         svg-load('./assets/svgs/scrollbar-vertical/thumb-v/icon/grip-idle.svg'),
+         linear-gradient(90deg, #c8d6fb 0%, #c8d8fb 29.6308%, #bad0fc 69.7115%, #b9cbf3 92.3077%);
+   }
+
+   ::-webkit-scrollbar-thumb:vertical:hover {
+      border-image: svg-load('./assets/svgs/scrollbar-vertical/thumb-v/hover.svg') 3;
+      background-image:
+         svg-load('./assets/svgs/scrollbar-vertical/thumb-v/icon/grip-hover.svg'),
+         linear-gradient(90deg, #d8e8ff 0%, #d8e8ff 29.6308%, #d6e7ff 69.7115%, #cce1ff 92.3077%);
+   }
+
+   ::-webkit-scrollbar-thumb:vertical:active {
+      border-image: svg-load('./assets/svgs/scrollbar-vertical/thumb-v/pressed.svg') 3;
+      background-image:
+         svg-load('./assets/svgs/scrollbar-vertical/thumb-v/icon/grip-pressed.svg'),
+         linear-gradient(90deg, #abc1fa 0%, #aac0f9 29.6308%, #9abafa 69.7115%, #91b3f7 92.3077%);
+   }
+
+   ::-webkit-scrollbar-thumb:horizontal {
+      border-image: svg-load('./assets/svgs/scrollbar-horizontal/thumb-h/idle.svg') 3;
+      background-image:
+         svg-load('./assets/svgs/scrollbar-horizontal/thumb-h/icon/grip-idle.svg'),
+         linear-gradient(90deg, #b9cbf3 7.6923%, #bad0fc 30.2885%, #c8d8fb 70.3692%, #c8d6fb 100%);
+   }
+
+   ::-webkit-scrollbar-thumb:horizontal:hover {
+      border-image: svg-load('./assets/svgs/scrollbar-horizontal/thumb-h/hover.svg') 3;
+      background-image:
+         svg-load('./assets/svgs/scrollbar-horizontal/thumb-h/icon/grip-hover.svg'),
+         linear-gradient(0deg, #cce1ff 7.6923%, #d6e7ff 30.2885%, #d8e8ff 70.3692%, #d8e8ff 100%);
+   }
+
+   ::-webkit-scrollbar-thumb:horizontal:active {
+      border-image: svg-load('./assets/svgs/scrollbar-horizontal/thumb-h/pressed.svg') 3;
+      background-image:
+         svg-load('./assets/svgs/scrollbar-horizontal/thumb-h/icon/grip-pressed.svg'),
+         linear-gradient(0deg, #91b3f7 7.6923%, #9abafa 30.2885%, #aac0f9 70.3692%, #abc1fa 100%);
+   }
+
+   ::-webkit-scrollbar-button {
+      width: 17px;
+      height: 17px;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-color: #f3f1ec;
+   }
+
+   ::-webkit-scrollbar-button:single-button:vertical:decrement {
+      background-image: svg-load('./assets/svgs/scrollbar-vertical/up-idle.svg');
+   }
+   ::-webkit-scrollbar-button:single-button:vertical:decrement:hover {
+      background-image: svg-load('./assets/svgs/scrollbar-vertical/up-hover.svg');
+   }
+   ::-webkit-scrollbar-button:single-button:vertical:decrement:active {
+      background-image: svg-load('./assets/svgs/scrollbar-vertical/up-pressed.svg');
+   }
+   ::-webkit-scrollbar-button:single-button:vertical:decrement:disabled {
+      background-image: svg-load('./assets/svgs/scrollbar-vertical/up-disabled.svg');
+   }
+
+   ::-webkit-scrollbar-button:single-button:vertical:increment {
+      background-image: svg-load('./assets/svgs/scrollbar-vertical/down-idle.svg');
+   }
+   ::-webkit-scrollbar-button:single-button:vertical:increment:hover {
+      background-image: svg-load('./assets/svgs/scrollbar-vertical/down-hover.svg');
+   }
+   ::-webkit-scrollbar-button:single-button:vertical:increment:active {
+      background-image: svg-load('./assets/svgs/scrollbar-vertical/down-pressed.svg');
+   }
+   ::-webkit-scrollbar-button:single-button:vertical:increment:disabled {
+      background-image: svg-load('./assets/svgs/scrollbar-vertical/down-disabled.svg');
+   }
+
+   ::-webkit-scrollbar-button:single-button:horizontal:decrement {
+      background-image: svg-load('./assets/svgs/scrollbar-horizontal/left-idle.svg');
+   }
+   ::-webkit-scrollbar-button:single-button:horizontal:decrement:hover {
+      background-image: svg-load('./assets/svgs/scrollbar-horizontal/left-hover.svg');
+   }
+   ::-webkit-scrollbar-button:single-button:horizontal:decrement:active {
+      background-image: svg-load('./assets/svgs/scrollbar-horizontal/left-pressed.svg');
+   }
+   ::-webkit-scrollbar-button:single-button:horizontal:decrement:disabled {
+      background-image: svg-load('./assets/svgs/scrollbar-horizontal/left-disabled.svg');
+   }
+
+   ::-webkit-scrollbar-button:single-button:horizontal:increment {
+      background-image: svg-load('./assets/svgs/scrollbar-horizontal/right-idle.svg');
+   }
+   ::-webkit-scrollbar-button:single-button:horizontal:increment:hover {
+      background-image: svg-load('./assets/svgs/scrollbar-horizontal/right-hover.svg');
+   }
+   ::-webkit-scrollbar-button:single-button:horizontal:increment:active {
+      background-image: svg-load('./assets/svgs/scrollbar-horizontal/right-pressed.svg');
+   }
+   ::-webkit-scrollbar-button:single-button:horizontal:increment:disabled {
+      background-image: svg-load('./assets/svgs/scrollbar-horizontal/right-disabled.svg');
+   }
+
+   ::-webkit-scrollbar-corner {
+      background-color: #f3f1ec;
+   }
+}
