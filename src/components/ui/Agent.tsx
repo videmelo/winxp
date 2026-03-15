@@ -52,12 +52,18 @@ const extractFramesAndRemoveBackground = async (blob: Blob): Promise<string> => 
 };
 
 const ROVER_STORY = [
-   { text: "Woof! I'm Rover. Click this bubble to hear my story and learn about Windows XP!", anim: "Greet" },
-   { text: "I was officially introduced in 2001 as the search companion for Windows XP.", anim: "Searching" },
-   { text: "But my origins go back to 1995! I was originally created for a project called 'Microsoft Bob'.", anim: "Thinking" },
-   { text: "With Windows XP, Microsoft brought the colorful 'Luna' theme, making computers much friendlier.", anim: "LookUp" },
-   { text: "My job was to sniff out your files and keep you company while you worked.", anim: "Pleased" },
-   { text: "I'll let you explore the desktop now. Just click on me if you want to interact!", anim: "Acknowledge" },
+   { text: "Woof! I'm Rover. Click this bubble to hear my story and learn about Windows XP!", anim: 'Greet' },
+   { text: 'I was officially introduced in 2001 as the search companion for Windows XP.', anim: 'Searching' },
+   {
+      text: "But my origins go back to 1995! I was originally created for a project called 'Microsoft Bob'.",
+      anim: 'Thinking',
+   },
+   {
+      text: "With Windows XP, Microsoft brought the colorful 'Luna' theme, making computers much friendlier.",
+      anim: 'LookUp',
+   },
+   { text: 'My job was to sniff out your files and keep you company while you worked.', anim: 'Pleased' },
+   { text: "I'll let you explore the desktop now. Just click on me if you want to interact!", anim: 'Acknowledge' },
 ];
 
 export default function Agent({ fcsUrl, fps = 10, initialX, initialY }: AgentProps) {
@@ -221,7 +227,10 @@ export default function Agent({ fcsUrl, fps = 10, initialX, initialY }: AgentPro
 
                   for (const animName of priorityAnims) {
                      if (manifest.animations[animName]) {
-                        animationsRef.current[animName] = await processAnimation(animName, manifest.animations[animName]);
+                        animationsRef.current[animName] = await processAnimation(
+                           animName,
+                           manifest.animations[animName],
+                        );
                      }
                   }
 
@@ -448,7 +457,7 @@ export default function Agent({ fcsUrl, fps = 10, initialX, initialY }: AgentPro
          {/* Speech Bubble */}
          <div
             onClick={handleBubbleClick}
-            className={`absolute bottom-[95px] right-[35px] w-40 p-2.5 bg-[#fffde1] rounded-xl shadow-[2px_2px_3px_0px_rgba(0,0,0,0.50)] border border-black flex justify-center items-center cursor-pointer transition-all duration-300 transform ${isBubbleVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}
+            className={`absolute bottom-23.75 right-8.75 w-40 p-2.5 bg-[#fffde1] rounded-xl shadow-[2px_2px_3px_0px_rgba(0,0,0,0.50)] border border-black flex justify-center items-center cursor-pointer transition-all duration-300 transform ${isBubbleVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}
             style={{ pointerEvents: isBubbleVisible ? 'auto' : 'none' }}
          >
             <div className="text-black text-[11px] font-normal font-tahoma leading-tight text-center relative z-20">
@@ -456,9 +465,9 @@ export default function Agent({ fcsUrl, fps = 10, initialX, initialY }: AgentPro
             </div>
 
             {/* Bubble Tail (Outer Black) */}
-            <div className="absolute -bottom-[10px] right-[10px] w-0 h-0 border-t-[10px] border-t-black border-l-[10px] border-l-transparent" />
+            <div className="absolute -bottom-2.5 right-2.5 w-0 h-0 border-t-10 border-t-black border-l-10 border-l-transparent" />
             {/* Bubble Tail (Inner Yellow) */}
-            <div className="absolute -bottom-[8px] right-[11px] w-0 h-0 border-t-[9px] border-t-[#fffde1] border-l-[9px] border-l-transparent z-10" />
+            <div className="absolute -bottom-2 right-2.75 w-0 h-0 border-t-[9px] border-t-[#fffde1] border-l-[9px] border-l-transparent z-10" />
          </div>
 
          <img

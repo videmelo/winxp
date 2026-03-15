@@ -143,7 +143,7 @@ function Footer() {
 }
 
 function StartMenu({
-   user = { name: 'Vinicius', avatar: './src/assets/icons/system/placeholders-32.png' },
+   user = { name: 'Vinicius', avatar: '/assets/icons/system/placeholders-32.png' },
    onLaunch,
    leftItems = {
       pinned: ['internet-explorer', 'outlook'].map((id) => {
