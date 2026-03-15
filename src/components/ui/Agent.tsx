@@ -8,6 +8,13 @@ interface AgentProps {
    initialY?: number;
 }
 
+type AnimationOptions = {
+   fps?: number;
+   loop?: boolean;
+   nextAnim?: string;
+   nextOptions?: AnimationOptions;
+};
+
 const extractFramesAndRemoveBackground = async (blob: Blob): Promise<string> => {
    return new Promise<string>((resolve, reject) => {
       const img = new Image();
@@ -106,7 +113,7 @@ export default function Agent({ fcsUrl, fps = 10, initialX, initialY }: AgentPro
    }, []);
 
    const playAnimation = useCallback(
-      (animName: string, options: { fps?: number; loop?: boolean; nextAnim?: string; nextOptions?: any } = {}) => {
+      (animName: string, options: AnimationOptions = {}) => {
          if (!animationsRef.current[animName] || !imgRef.current) return;
 
          console.log(`[AGENT] Playing: ${animName}`);
