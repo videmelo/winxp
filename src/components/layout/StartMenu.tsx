@@ -2,6 +2,7 @@ import React from 'react';
 
 import { programs, folders } from '../../utils/programs.ts';
 import { useWindowManager } from '../../hooks/useWindowManager';
+import { SYSTEM_TREE, findSystemTreeNodeById } from '../../constants/system-tree';
 
 type ProgramItem = {
    id: string;
@@ -33,6 +34,37 @@ type StartMenuProps = {
 const items = new Map(
    [...programs, ...folders].map((item) => [item.id, { ...item, label: 'label' in item ? item.label : item.name }]),
 );
+
+function toProgramItem(id: string): ProgramItem {
+   const source = items.get(id);
+
+   return {
+      id,
+      icon: source?.icons.md || source?.icons.sm || '',
+      name: source?.name || id,
+      label: source?.label,
+   };
+}
+
+function toRightPaneItem(id: string, isBold = false): RightPaneItem {
+   const source = items.get(id);
+
+   return {
+      id,
+      icon: source?.icons.md || source?.icons.sm || '',
+      name: source?.name || id,
+      isBold,
+   };
+}
+
+const allProgramsIds =
+   findSystemTreeNodeById(SYSTEM_TREE, 'all-programs')?.children?.map((node) => node.iconId || node.id) || [];
+
+const defaultPinnedIds = ['internet-explorer', 'outlook'].filter((id) => allProgramsIds.includes(id));
+const defaultRecentIds = allProgramsIds.filter((id) => !defaultPinnedIds.includes(id)).slice(0, 5);
+
+const controlPanelTreeIds =
+   findSystemTreeNodeById(SYSTEM_TREE, 'control-panel-tree')?.children?.map((node) => node.iconId || node.id) || [];
 
 function Header({ username, avatarUrl }: { username: string; avatarUrl: string }) {
    return (
@@ -146,40 +178,15 @@ function StartMenu({
    user = { name: 'Vinicius', avatar: '/assets/icons/system/placeholders-32.png' },
    onLaunch,
    leftItems = {
-      pinned: ['internet-explorer', 'outlook'].map((id) => {
-         const item = items.get(id);
-         return {
-            id,
-            icon: item?.icons.md || '',
-            name: item?.name || '',
-            label: item?.label || '',
-         };
-      }),
-      recent: ['windows-media-player', 'microsoft-news', 'windows-messenger', 'windows-tour', 'transfer-wizzard'].map(
-         (id) => ({
-            id,
-            icon: items.get(id)?.icons.md || '',
-            name: items.get(id)?.name || '',
-         }),
-      ),
+      pinned: defaultPinnedIds.map(toProgramItem),
+      recent: defaultRecentIds.map(toProgramItem),
    },
    rightItems = [
-      ['my-documents', 'my-recent-documents', 'my-pictures', 'my-music', 'my-computer'].map((id) => ({
-         id,
-         icon: items.get(id)?.icons.md || '',
-         name: items.get(id)?.name || '',
-         isBold: true,
-      })),
-      ['control-panel', 'setup-default-programs', 'printer-and-faxes'].map((id) => ({
-         id,
-         icon: items.get(id)?.icons.md || '',
-         name: items.get(id)?.name || '',
-      })),
-      ['help-and-support', 'search', 'run'].map((id) => ({
-         id,
-         icon: items.get(id)?.icons.md || '',
-         name: items.get(id)?.name || '',
-      })),
+      ['my-documents', 'my-recent-documents', 'my-pictures', 'my-music', 'this-computer'].map((id) =>
+         toRightPaneItem(id, true),
+      ),
+      ['control-panel', ...controlPanelTreeIds.slice(0, 2)].map((id) => toRightPaneItem(id)),
+      ['help-and-support', 'search', 'run'].map((id) => toRightPaneItem(id)),
    ],
 }: StartMenuProps) {
    const { openProgram } = useWindowManager();

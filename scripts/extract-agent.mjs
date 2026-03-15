@@ -56,7 +56,7 @@ async function extract() {
    }
 
    fs.writeFileSync(MANIFEST_FILE, JSON.stringify(manifest, null, 2));
-   console.log(`Success! extractd assets and manifest generated at ${OUTPUT_DIR}`);
+   console.log(`Success! extracted assets and manifest generated at ${OUTPUT_DIR}`);
 }
 
 extract().catch(console.error);

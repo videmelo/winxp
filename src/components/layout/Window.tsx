@@ -130,8 +130,8 @@ function Window({ windowId, children }: WindowProps) {
          }}
       >
          <TitleBar win={win} />
-         <div className="xp-window-content flex-1 overflow-auto bg-bg-default-window">
-            {win.exe ? <win.exe /> : children}
+         <div className="xp-window-content flex-1 flex overflow-hidden bg-bg-default-window">
+            <div className="flex-1 flex p-0.5">{win.exe ? <win.exe /> : children}</div>
          </div>
          {!isMaximized && win.resizable && <ResizeHandles windowId={win.id} />}
       </div>

@@ -236,16 +236,16 @@
       height: 100%;
       position: relative;
       background: #1255e7;
-      border-left: 1px solid #0855dd;
-      border-right: 1px solid #0855dd;
-      border-bottom: 1px solid #0855dd;
+      border-left: 3px solid #0855dd;
+      border-right: 3px solid #0855dd;
+      border-bottom: 3px solid #0855dd;
       box-shadow:
-         inset 3px 0px 1px -1px #166aee,
-         inset -3px 0px 1px -1px #0019cf,
-         inset 3px 0px 1px -1px #00138c,
-         inset -3px 0px 1px -1px #0048f1,
-         inset 0px -3px 1px -1px #166aee,
-         inset 0px 3px 1px -1px #0019cf;
+         inset 3px 0px 0px -1px #166aee,
+         inset -3px 0px 0px -1px #0019cf,
+         inset 3px 0px 0px -1px #00138c,
+         inset -3px 0px 0px -1px #0048f1,
+         inset 0px -3px 0px -1px #166aee,
+         inset 0px 3px 0px -1px #0019cf;
    }
 
    .xp-window-frame {
@@ -583,5 +583,211 @@
       box-shadow:
          inset -1px -1px 0px 0px rgba(254, 254, 254, 1),
          inset 1px 1px 0px 0px rgba(0, 0, 0, 0.25);
+   }
+
+   .xp-control-panel-sidepanel {
+      background: linear-gradient(180deg, #7ba2e7 0%, #6b85dc 100%);
+   }
+
+   .xp-control-panel-sidepanel::before {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 1px;
+      height: 100%;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.33) 0%, rgba(255, 255, 255, 0) 100%);
+   }
+
+   .ui-dropdownmenu-switch-btn {
+      position: relative;
+      width: 17px;
+      height: 19px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      outline: none;
+   }
+
+   .ui-dropdownmenu-switch-btn:disabled {
+      cursor: not-allowed;
+   }
+
+   .ui-dropdownmenu-switch-btn::before {
+      content: '';
+      position: absolute;
+      left: 1px;
+      top: 1px;
+      width: 15px;
+      height: 17px;
+      border-radius: 2px;
+      border: 1px solid rgba(29, 78, 216, 0.3);
+      background-color: #bfdbfe;
+      box-shadow:
+         inset 4px 4px 3px -2px rgba(246, 255, 255, 0.66),
+         inset -4px -4px 3px -2px rgba(185, 218, 251, 1);
+      outline: 1px solid white;
+   }
+
+   .ui-dropdownmenu-switch-btn:not(:disabled):hover::before {
+      border-color: rgba(165, 180, 252, 0.5);
+      background-color: #c7d2fe;
+      box-shadow:
+         inset 4px 4px 3px -2px rgba(224, 234, 255, 1),
+         inset -4px -4px 3px -2px rgba(177, 204, 250, 1);
+   }
+
+   .ui-dropdownmenu-switch-btn:not(:disabled):active::before {
+      border-color: rgba(29, 78, 216, 0.3);
+      background-color: #a5b4fc;
+      box-shadow:
+         inset -4px -4px 3px -2px rgba(195, 207, 255, 1),
+         inset 4px 4px 3px -2px rgba(136, 157, 218, 1);
+   }
+
+   .ui-dropdownmenu-switch-btn:disabled::before {
+      border-color: rgba(214, 211, 209, 0.5);
+      background-color: #e7e5e4;
+      box-shadow:
+         inset 4px 4px 3px -2px rgba(251, 251, 249, 1),
+         inset -4px -4px 3px -2px rgba(230, 230, 221, 1);
+   }
+
+   .ui-dropdownmenu-switch-btn::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 6.5px;
+      height: 6.5px;
+      border-bottom: 2px solid #4d6185;
+      border-right: 2px solid #4d6185;
+      transform: translate(-47%, -66%) rotate(45deg);
+      pointer-events: none;
+   }
+
+   .ui-dropdownmenu-switch-btn--up::after {
+      border-bottom: none;
+      border-right: none;
+      border-top: 2px solid #4d6185;
+      border-left: 2px solid #4d6185;
+      transform: translate(-47%, -33%) rotate(45deg);
+   }
+
+   .ui-dropdownmenu-switch-btn:disabled::after {
+      border-color: #d6d3d1;
+   }
+
+   .ui-address-dropdown {
+      position: absolute;
+      top: calc(100% + 1px);
+      left: 0;
+      right: 0;
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      max-height: 260px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      background: #ffffff;
+      border: 1px solid #7f9db9;
+      box-shadow:
+         inset 1px 1px 0px #f6f6f4,
+         inset -1px -1px 0px #d8d6c8;
+   }
+
+   .ui-address-dropdown-item {
+      width: 100%;
+      min-height: 18px;
+      padding-top: 1px;
+      padding-bottom: 1px;
+      padding-right: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: transparent;
+      color: #000000;
+      border: none;
+      cursor: default;
+      text-align: left;
+   }
+
+   .ui-address-dropdown-item.is-hovered {
+      background: #316ac5;
+      color: #ffffff;
+   }
+
+   .ui-address-dropdown-item.is-hovered .label-tahoma {
+      color: #ffffff;
+   }
+
+   .ui-address-dropdown-expander,
+   .ui-address-dropdown-spacer {
+      width: 8px;
+      height: 8px;
+      flex: 0 0 auto;
+      display: inline-block;
+      margin-right: 1px;
+   }
+
+   .ui-address-dropdown-expander {
+      position: relative;
+   }
+
+   .ui-address-dropdown-expander::before {
+      content: '';
+      position: absolute;
+      left: 1px;
+      top: 1px;
+      width: 5px;
+      height: 5px;
+      border-right: 1.5px solid #4d6185;
+      border-bottom: 1.5px solid #4d6185;
+      transform: rotate(-45deg);
+   }
+
+   .ui-address-dropdown-expander.is-open::before {
+      transform: rotate(45deg);
+      top: 0;
+   }
+
+   .ui-tree-btn {
+      position: relative;
+      width: 8px;
+      height: 8px;
+      background-color: #e7e5e4;
+      border-radius: 1px;
+      box-shadow:
+         inset -2px -4px 3px -1px rgba(0, 0, 0, 0.25),
+         inset 2px 4px 3px -1px rgba(255, 255, 255, 1);
+      outline: 1px solid #94a3b8;
+      overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+   }
+
+   .ui-tree-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 5px;
+      height: 1px;
+      background-color: black;
+      transform: translate(-50%, -50%);
+   }
+
+   .ui-tree-btn[data-mode='expand']::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 1px;
+      height: 5px;
+      background-color: black;
+      transform: translate(-50%, -50%);
    }
 }

@@ -1,4 +1,4 @@
-import { programs, folders, type Program, type Folder } from '../../utils/programs';
+import { programsMetadata, folders, type ProgramMetadata, type Folder } from '../../constants/program-data';
 
 type IconSize = 'sm' | 'md' | 'lg' | 'xl';
 
@@ -15,7 +15,9 @@ const sizeClasses: Record<IconSize, string> = {
    xl: 'size-12',
 };
 
-const items = new Map<string, Program | Folder>([...programs, ...folders].map((item) => [item.id, item]));
+const items = new Map<string, ProgramMetadata | Folder>(
+   [...programsMetadata, ...folders].map((item) => [item.id, item])
+);
 
 function ProgramIcon({ id, size, className = '' }: ProgramIconProps) {
    const item = items.get(id);

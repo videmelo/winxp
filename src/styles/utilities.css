@@ -7,6 +7,49 @@
    image-rendering: crisp-edges;
 }
 
+@utility xp-inset-border {
+   --xp-inset-border-color: #cac6af;
+   --xp-inset-highlight-color: #f6f6f4;
+   --xp-inset-top-width: 0;
+   --xp-inset-right-width: 0;
+   --xp-inset-bottom-width: 0;
+   --xp-inset-left-width: 0;
+   --xp-inset-shadow-top: 0;
+   --xp-inset-shadow-right: 0;
+   --xp-inset-shadow-bottom: 0;
+   --xp-inset-shadow-left: 0;
+
+   border-style: solid;
+   border-color: var(--xp-inset-border-color);
+   border-width: var(--xp-inset-top-width) var(--xp-inset-right-width) var(--xp-inset-bottom-width)
+      var(--xp-inset-left-width);
+   box-shadow:
+      inset 0 var(--xp-inset-shadow-top) 0 var(--xp-inset-highlight-color),
+      inset var(--xp-inset-shadow-right) 0 0 var(--xp-inset-highlight-color),
+      inset 0 var(--xp-inset-shadow-bottom) 0 var(--xp-inset-highlight-color),
+      inset var(--xp-inset-shadow-left) 0 0 var(--xp-inset-highlight-color);
+}
+
+@utility xp-inset-border-top {
+   --xp-inset-top-width: 1px;
+   --xp-inset-shadow-top: 1px;
+}
+
+@utility xp-inset-border-right {
+   --xp-inset-right-width: 1px;
+   --xp-inset-shadow-right: -1px;
+}
+
+@utility xp-inset-border-bottom {
+   --xp-inset-bottom-width: 1px;
+   --xp-inset-shadow-bottom: -1px;
+}
+
+@utility xp-inset-border-left {
+   --xp-inset-left-width: 1px;
+   --xp-inset-shadow-left: 1px;
+}
+
 svg {
    @apply pixelated;
 }
