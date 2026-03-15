@@ -155,18 +155,13 @@ function StartMenu({
             label: item?.label || '',
          };
       }),
-      recent: [
-         'windows-media-player',
-         'microsoft-news',
-         'windows-messenger',
-         'windows-tour',
-         'transfer-wizzard',
-         'component-preview',
-      ].map((id) => ({
-         id,
-         icon: items.get(id)?.icons.md || '',
-         name: items.get(id)?.name || '',
-      })),
+      recent: ['windows-media-player', 'microsoft-news', 'windows-messenger', 'windows-tour', 'transfer-wizzard'].map(
+         (id) => ({
+            id,
+            icon: items.get(id)?.icons.md || '',
+            name: items.get(id)?.name || '',
+         }),
+      ),
    },
    rightItems = [
       ['my-documents', 'my-recent-documents', 'my-pictures', 'my-music', 'my-computer'].map((id) => ({

@@ -92,8 +92,8 @@ function Taskbar() {
 
    return (
       <div className="xp-taskbar absolute bottom-0 left-0 w-full h-7.5 flex justify-between items-center z-9999">
-         <div ref={containerRef} className="relative flex-1 min-w-0">
-            <div className="absolute bottom-7.5 left-0">
+         <div ref={containerRef} className="relative h-full flex-1 min-w-0">
+            <div className="absolute bottom-full left-0">
                {startMenuOpen ? (
                   <StartMenu
                      onLaunch={(programId) => {
