@@ -375,7 +375,7 @@ export default function Agent({ fcsUrl, fps = 10, initialX, initialY }: AgentPro
             position: 'fixed',
             left: `${position.x}px`,
             top: `${position.y}px`,
-            zIndex: 9999,
+            zIndex: 99,
             display: 'block',
             opacity: isReady ? 1 : 0,
             width: '80px',

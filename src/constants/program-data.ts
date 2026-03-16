@@ -184,6 +184,20 @@ export const programsMetadata: ProgramMetadata[] = [
       },
    },
    {
+      id: 'minecraft',
+      name: 'Minecraft',
+      label: 'Classic',
+      icons: {
+         lg: '/assets/icons/games/minecraft-48.png',
+         sm: '/assets/icons/games/minecraft-16.png',
+         md: '/assets/icons/games/minecraft-32.png',
+      },
+      windowConfig: {
+         defaultSize: { width: 960, height: 700 },
+         minSize: { width: 640, height: 480 },
+      },
+   },
+   {
       id: 'network-and-internet',
       name: 'Network and Internet',
       label: 'Network and Internet',

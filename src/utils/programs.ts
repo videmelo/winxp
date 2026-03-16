@@ -1,6 +1,7 @@
 import type React from 'react';
 import ComponentPreview from '../components/programs/component-preview/ComponentPreview';
 import ControlPanel from '../components/programs/control-panel/ControlPanel';
+import Minecraft from '../components/programs/minecraft/Minecraft';
 import {
    programsMetadata,
    folders as foldersMetadata,
@@ -24,6 +25,9 @@ export const programs: Program[] = programsMetadata.map((p) => {
    }
    if (p.id === 'component-preview') {
       return { ...p, exe: ComponentPreview };
+   }
+   if (p.id === 'minecraft') {
+      return { ...p, exe: Minecraft };
    }
    return p;
 });
