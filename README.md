@@ -1,5 +1,5 @@
 # WinXP
 
-Uma recriacao interativa do desktop do Windows XP feita com React, TypeScript.
+An interactive recreation of the Windows XP desktop built with React and TypeScript.
 
-![DeskTop](/public/assets/image.png)
+![Desktop](/public/assets/image.png)

@@ -3,7 +3,7 @@ import path from 'node:path';
 import JSZip from 'jszip';
 import { Jimp } from 'jimp';
 
-const FCS_FILE = './public/rover.fcs';
+const FCS_FILE = '/public/rover/rover.fcs';
 const OUTPUT_DIR = './public/rover';
 const MANIFEST_FILE = path.join(OUTPUT_DIR, 'manifest.json');
 

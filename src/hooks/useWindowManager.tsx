@@ -292,32 +292,46 @@ export function WindowManagerProvider({ children }: { children: React.ReactNode 
       dispatch({ type: 'OPEN_WINDOW', payload: options });
    }, []);
 
-   const openProgram = useCallback((programId: string, options?: OpenProgramOptions) => {
-      const item = registry.get(programId);
-      if (!item) {
-         console.warn(`[WindowManager] Program not found: "${programId}"`);
-         return;
-      }
-      const exe = 'exe' in item ? item.exe : undefined;
-      const cfg: WindowConfig | undefined = 'windowConfig' in item ? item.windowConfig : undefined;
-      dispatch({
-         type: 'OPEN_WINDOW',
-         payload: {
-            programId: item.id,
-            title: item.name,
-            icon: item.id,
-            exe,
-            size: cfg?.defaultSize,
-            minSize: cfg?.minSize,
-            maxSize: cfg?.maxSize ?? null,
-            position: cfg?.defaultPosition,
-            defaultStatus: cfg?.defaultStatus,
-            titleBarButtons: cfg?.titleBarButtons,
-            resizable: cfg?.resizable,
-            ...options,
-         },
-      });
-   }, []);
+   const openProgram = useCallback(
+      (programId: string, options?: OpenProgramOptions) => {
+         const item = registry.get(programId);
+         if (!item) {
+            console.warn(`[WindowManager] Program not found: "${programId}"`);
+            return;
+         }
+
+         const cfg: WindowConfig | undefined = 'windowConfig' in item ? item.windowConfig : undefined;
+
+         // Check for single instance
+         if (cfg?.singleInstance) {
+            const existingWindow = stateRef.current.windows.find((w) => w.programId === programId);
+            if (existingWindow) {
+               dispatch({ type: 'FOCUS_WINDOW', payload: { id: existingWindow.id } });
+               return;
+            }
+         }
+
+         const exe = 'exe' in item ? item.exe : undefined;
+         dispatch({
+            type: 'OPEN_WINDOW',
+            payload: {
+               programId: item.id,
+               title: item.name,
+               icon: item.id,
+               exe,
+               size: cfg?.defaultSize,
+               minSize: cfg?.minSize,
+               maxSize: cfg?.maxSize ?? null,
+               position: cfg?.defaultPosition,
+               defaultStatus: cfg?.defaultStatus,
+               titleBarButtons: cfg?.titleBarButtons,
+               resizable: cfg?.resizable,
+               ...options,
+            },
+         });
+      },
+      [dispatch],
+   );
 
    const closeWindow = useCallback((id: string) => {
       dispatch({ type: 'CLOSE_WINDOW', payload: { id } });

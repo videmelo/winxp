@@ -8,6 +8,7 @@ export type WindowConfig = {
    defaultStatus?: 'normal' | 'minimized' | 'maximized';
    titleBarButtons?: TitleBarButton[];
    resizable?: boolean;
+   singleInstance?: boolean;
 };
 
 export type ProgramMetadata = {
@@ -20,6 +21,7 @@ export type ProgramMetadata = {
       lg: string;
    };
    windowConfig?: WindowConfig;
+   singleInstance?: boolean;
 };
 
 export const programsMetadata: ProgramMetadata[] = [
@@ -195,6 +197,7 @@ export const programsMetadata: ProgramMetadata[] = [
       windowConfig: {
          defaultSize: { width: 960, height: 700 },
          minSize: { width: 640, height: 480 },
+         singleInstance: true,
       },
    },
    {
