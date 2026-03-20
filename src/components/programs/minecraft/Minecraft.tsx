@@ -6,6 +6,44 @@ const SW_SCOPE = '/minecraft/';
 export default function Minecraft() {
    const [isReady, setIsReady] = useState(false);
    const [error, setError] = useState<string | null>(null);
+   const [progress, setProgress] = useState(8);
+   const [launch, setLaunch] = useState('Preparing clean environment...');
+
+   useEffect(() => {
+      if (isReady) {
+         setProgress(100);
+         setLaunch('Launching Minecraft Classic...');
+         return;
+      }
+
+      const status = [
+         'Preparing clean environment...',
+         'Starting session worker...',
+         'Checking game assets...',
+         'Almost ready...',
+      ];
+
+      let step = 0;
+      const statusTimer = window.setInterval(() => {
+         step = (step + 1) % status.length;
+         setLaunch(status[step]);
+      }, 1400);
+
+      const progressTimer = window.setInterval(() => {
+         setProgress((prev) => {
+            if (prev >= 94) return prev;
+
+            // Ease-out progress so the bar keeps moving while waiting for activation.
+            const next = prev + Math.max(1, Math.round((96 - prev) * 0.08));
+            return Math.min(94, next);
+         });
+      }, 320);
+
+      return () => {
+         window.clearInterval(statusTimer);
+         window.clearInterval(progressTimer);
+      };
+   }, [isReady]);
 
    useEffect(() => {
       let mounted = true;
@@ -48,6 +86,7 @@ export default function Minecraft() {
                if (!mounted) return;
                if (registration.active && registration.active.state === 'activated') {
                   // Minimum delay for the browser to process interceptor activation
+                  setProgress(100);
                   setTimeout(() => {
                      if (mounted) setIsReady(true);
                   }, 150);
@@ -80,30 +119,32 @@ export default function Minecraft() {
    }, []);
 
    return (
-      <div
-         style={{
-            width: '100%',
-            height: '100%',
-            margin: 0,
-            padding: 0,
-            overflow: 'hidden',
-            backgroundColor: '#000',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-         }}
-      >
+      <div className="m-0 flex h-full w-full items-center justify-center overflow-hidden bg-black p-0">
          {error ? (
-            <div style={{ color: '#ff4444', fontFamily: 'monospace' }}>{error}</div>
+            <div className="font-mono text-red-500">{error}</div>
          ) : !isReady ? (
-            <div style={{ color: '#fff', fontFamily: 'monospace', textAlign: 'center' }}>
-               <div style={{ fontSize: '18px', marginBottom: '10px' }}>Minecraft Classic</div>
-               <div>Initializing Clean Session...</div>
+            <div className="w-[min(420px,calc(100%-40px))] border border-white bg-black p-5 font-mono text-white">
+               <div className="mb-2 text-lg font-bold">Minecraft Classic</div>
+               <div className="mb-3.5 text-xs text-white">{launch}</div>
+
+               <div className="h-3.5 w-full overflow-hidden border border-white bg-black">
+                  <div
+                     className="h-full bg-white"
+                     style={{
+                        width: `${progress}%`,
+                     }}
+                  />
+               </div>
+
+               <div className="mt-2 flex justify-between text-xs text-white">
+                  <span>Session boot</span>
+                  <span>{Math.round(progress)}%</span>
+               </div>
             </div>
          ) : (
             <iframe
                src="/minecraft/index.html"
-               style={{ width: '100%', height: '100%', border: 'none', display: 'block' }}
+               className="block h-full w-full border-0"
                title="Minecraft Classic"
                sandbox="allow-scripts allow-same-origin allow-pointer-lock"
             />
