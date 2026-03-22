@@ -20,7 +20,7 @@ export type WindowState = {
    programId: string;
    title: string;
    icon: string;
-   exe?: React.FC;
+   exe?: React.FC<{ windowId: string; onLoaded?: () => void }>;
    position: WindowPosition;
    prevPosition: WindowPosition | null;
    size: WindowSize;
@@ -28,17 +28,19 @@ export type WindowState = {
    minSize: WindowSize;
    maxSize: WindowSize | null;
    status: WindowStatus;
+   preMinimizedStatus?: WindowStatus; // Added to track status before minimize
    zIndex: number;
    isActive: boolean;
    titleBarButtons: TitleBarButton[];
    resizable: boolean;
+   isLoading?: boolean;
 };
 
 export type OpenWindowOptions = {
    programId: string;
    title: string;
    icon: string;
-   exe?: React.FC;
+   exe?: React.FC<{ windowId: string; onLoaded?: () => void }>;
    position?: WindowPosition;
    size?: WindowSize;
    minSize?: WindowSize;
@@ -46,6 +48,7 @@ export type OpenWindowOptions = {
    defaultStatus?: WindowStatus;
    titleBarButtons?: TitleBarButton[];
    resizable?: boolean;
+   isLoading?: boolean;
 };
 
 export type OpenProgramOptions = {
@@ -63,7 +66,8 @@ type Action =
    | { type: 'FOCUS_WINDOW'; payload: { id: string } }
    | { type: 'MOVE_WINDOW'; payload: { id: string; position: WindowPosition } }
    | { type: 'RESIZE_WINDOW'; payload: { id: string; size: WindowSize; position?: WindowPosition } }
-   | { type: 'TOGGLE_MAXIMIZE'; payload: { id: string } };
+   | { type: 'TOGGLE_MAXIMIZE'; payload: { id: string } }
+   | { type: 'SET_WINDOW_LOADED'; payload: { id: string } };
 
 type ManagerState = {
    windows: WindowState[];
@@ -102,6 +106,7 @@ function reducer(state: ManagerState, action: Action): ManagerState {
             defaultStatus,
             titleBarButtons,
             resizable,
+            isLoading,
          } = action.payload;
          const id = generateId();
          const zIndex = state.nextZIndex;
@@ -130,13 +135,18 @@ function reducer(state: ManagerState, action: Action): ManagerState {
             maxSize: maxSize ?? null,
             status: initialStatus,
             zIndex,
-            isActive: true,
+            isActive: !isLoading, // Don't focus while loading
             titleBarButtons: titleBarButtons ?? ['minimize', 'maximize', 'close'],
             resizable: resizable ?? true,
+            isLoading: isLoading ?? false,
          };
 
+         const updatedWindows = isLoading
+            ? [...state.windows, newWindow]
+            : [...setActive(state.windows, id), newWindow];
+
          return {
-            windows: [...setActive(state.windows, id), newWindow],
+            windows: updatedWindows,
             nextZIndex: zIndex + 1,
          };
       }
@@ -153,10 +163,12 @@ function reducer(state: ManagerState, action: Action): ManagerState {
 
       case 'MINIMIZE_WINDOW': {
          const windows = state.windows.map((w) =>
-            w.id === action.payload.id ? { ...w, status: 'minimized' as WindowStatus, isActive: false } : w,
+            w.id === action.payload.id
+               ? { ...w, status: 'minimized' as WindowStatus, preMinimizedStatus: w.status, isActive: false }
+               : w,
          );
 
-         const visible = windows.filter((w) => w.status !== 'minimized');
+         const visible = windows.filter((w) => w.status !== 'minimized' && !w.isLoading);
          if (visible.length > 0) {
             const topWindow = visible.reduce((a, b) => (a.zIndex > b.zIndex ? a : b));
             return { ...state, windows: setActive(windows, topWindow.id) };
@@ -219,7 +231,11 @@ function reducer(state: ManagerState, action: Action): ManagerState {
             windows: setActive(
                state.windows.map((w) =>
                   w.id === action.payload.id
-                     ? { ...w, zIndex, status: w.status === 'minimized' ? 'normal' : w.status }
+                     ? {
+                          ...w,
+                          zIndex,
+                          status: w.status === 'minimized' ? (w.prevSize ? 'maximized' : 'normal') : w.status,
+                       }
                      : w,
                ),
                action.payload.id,
@@ -258,6 +274,19 @@ function reducer(state: ManagerState, action: Action): ManagerState {
          };
       }
 
+      case 'SET_WINDOW_LOADED': {
+         const windows = state.windows.map((w) =>
+            w.id === action.payload.id
+               ? { ...w, isLoading: false, isActive: true, zIndex: state.nextZIndex }
+               : { ...w, isActive: false },
+         );
+         return {
+            ...state,
+            windows,
+            nextZIndex: state.nextZIndex + 1,
+         };
+      }
+
       default:
          return state;
    }
@@ -276,6 +305,7 @@ type WindowManagerContextType = {
    moveWindow: (id: string, position: WindowPosition) => void;
    resizeWindow: (id: string, size: WindowSize, position?: WindowPosition) => void;
    getWindow: (id: string) => WindowState | undefined;
+   setWindowLoaded: (id: string) => void;
 };
 
 const WindowManagerContext = createContext<WindowManagerContextType | null>(null);
@@ -312,6 +342,8 @@ export function WindowManagerProvider({ children }: { children: React.ReactNode 
          }
 
          const exe = 'exe' in item ? item.exe : undefined;
+         const isLoading = programId === 'paint'; // We explicitly set paint to loading
+
          dispatch({
             type: 'OPEN_WINDOW',
             payload: {
@@ -326,6 +358,7 @@ export function WindowManagerProvider({ children }: { children: React.ReactNode 
                defaultStatus: cfg?.defaultStatus,
                titleBarButtons: cfg?.titleBarButtons,
                resizable: cfg?.resizable,
+               isLoading,
                ...options,
             },
          });
@@ -354,7 +387,10 @@ export function WindowManagerProvider({ children }: { children: React.ReactNode 
    }, []);
 
    const focusWindow = useCallback((id: string) => {
-      dispatch({ type: 'FOCUS_WINDOW', payload: { id } });
+      const win = stateRef.current.windows.find((w) => w.id === id);
+      if (win && !win.isLoading) {
+         dispatch({ type: 'FOCUS_WINDOW', payload: { id } });
+      }
    }, []);
 
    const moveWindow = useCallback((id: string, position: WindowPosition) => {
@@ -367,6 +403,10 @@ export function WindowManagerProvider({ children }: { children: React.ReactNode 
 
    const getWindow = useCallback((id: string) => {
       return stateRef.current.windows.find((w) => w.id === id);
+   }, []);
+
+   const setWindowLoaded = useCallback((id: string) => {
+      dispatch({ type: 'SET_WINDOW_LOADED', payload: { id } });
    }, []);
 
    const value: WindowManagerContextType = {
@@ -382,6 +422,7 @@ export function WindowManagerProvider({ children }: { children: React.ReactNode 
       moveWindow,
       resizeWindow,
       getWindow,
+      setWindowLoaded,
    };
 
    return <WindowManagerContext.Provider value={value}>{children}</WindowManagerContext.Provider>;

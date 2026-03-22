@@ -10,11 +10,7 @@ export default function Minecraft() {
    const [launch, setLaunch] = useState('Preparing clean environment...');
 
    useEffect(() => {
-      if (isReady) {
-         setProgress(100);
-         setLaunch('Launching Minecraft Classic...');
-         return;
-      }
+      if (isReady) return;
 
       const status = [
          'Preparing clean environment...',
@@ -85,14 +81,16 @@ export default function Minecraft() {
             const checkStatus = () => {
                if (!mounted) return;
                if (registration.active && registration.active.state === 'activated') {
-                  // Minimum delay for the browser to process interceptor activation
                   setProgress(100);
+                  setLaunch('Launching Minecraft Classic...');
+
+                  // Minimum delay for the browser to process interceptor activation
                   setTimeout(() => {
                      if (mounted) setIsReady(true);
                   }, 150);
                } else if (registration.installing) {
-                  registration.installing.addEventListener('statechange', (e: any) => {
-                     if (e.target.state === 'activated' && mounted) checkStatus();
+                  registration.installing.addEventListener('statechange', (e: Event) => {
+                     if ((e.target as ServiceWorker).state === 'activated' && mounted) checkStatus();
                   });
                } else if (registration.waiting) {
                   registration.waiting.postMessage({ type: 'SKIP_WAITING' });

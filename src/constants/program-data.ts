@@ -240,6 +240,20 @@ export const programsMetadata: ProgramMetadata[] = [
          md: '/assets/icons/files/scheduled-tasks-32.png',
       },
    },
+   {
+      id: 'paint',
+      name: 'Paint',
+      label: 'Paint',
+      icons: {
+         lg: '/assets/icons/system/paint-48.png',
+         sm: '/assets/icons/system/paint-16.png',
+         md: '/assets/icons/system/paint-32.png',
+      },
+      windowConfig: {
+         defaultSize: { width: 800, height: 600 },
+         minSize: { width: 400, height: 300 },
+      },
+   },
 ];
 
 export type Folder = {

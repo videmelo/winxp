@@ -186,7 +186,7 @@ function StartMenu({
          toRightPaneItem(id, true),
       ),
       ['control-panel', ...controlPanelTreeIds.slice(0, 2)].map((id) => toRightPaneItem(id)),
-      ['minecraft', 'help-and-support', 'search', 'run'].map((id) => toRightPaneItem(id)),
+      ['minecraft', 'paint', 'run'].map((id) => toRightPaneItem(id)),
    ],
 }: StartMenuProps) {
    const { openProgram } = useWindowManager();

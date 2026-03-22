@@ -108,16 +108,19 @@ interface WindowProps {
 }
 
 function Window({ windowId, children }: WindowProps) {
-   const { windows, focusWindow } = useWindowManager();
+   const { windows, focusWindow, setWindowLoaded } = useWindowManager();
    const win = windows.find((w) => w.id === windowId);
 
    if (!win || win.status === 'minimized') return null;
 
    const isMaximized = win.status === 'maximized';
+   const isLoading = win.isLoading;
 
    return (
       <div
-         className={`absolute flex flex-col xp-window-frame ${!win.isActive ? 'inactive' : ''}`}
+         className={`absolute flex flex-col xp-window-frame ${!win.isActive ? 'inactive' : ''} ${
+            isLoading ? 'opacity-0 pointer-events-none' : ''
+         }`}
          style={{
             left: win.position.x,
             top: win.position.y,
@@ -126,14 +129,16 @@ function Window({ windowId, children }: WindowProps) {
             zIndex: win.zIndex,
          }}
          onPointerDown={() => {
-            if (!win.isActive) focusWindow(win.id);
+            if (!win.isActive && !isLoading) focusWindow(win.id);
          }}
       >
          <TitleBar win={win} />
          <div className="xp-window-content flex-1 flex overflow-hidden bg-bg-default-window">
-            <div className="flex-1 flex p-0.5">{win.exe ? <win.exe /> : children}</div>
+            <div className="flex-1 flex p-0.5">
+               {win.exe ? <win.exe windowId={win.id} onLoaded={() => setWindowLoaded(win.id)} /> : children}
+            </div>
          </div>
-         {!isMaximized && win.resizable && <ResizeHandles windowId={win.id} />}
+         {!isMaximized && win.resizable && !isLoading && <ResizeHandles windowId={win.id} />}
       </div>
    );
 }

@@ -103,15 +103,17 @@ function Taskbar() {
                <StartButton onClick={() => setStartMenuOpen((prev) => !prev)} />
                <Separator />
                <div className="flex gap-1.5 items-center flex-1 min-w-0 overflow-hidden">
-                  {windows.map((win) => (
-                     <TaskbarTab
-                        key={win.id}
-                        icon={win.icon}
-                        label={win.title}
-                        isActive={win.isActive}
-                        onClick={() => handleTabClick(win.id, win.isActive, win.status === 'minimized')}
-                     />
-                  ))}
+                  {windows
+                     .filter((win) => !win.isLoading)
+                     .map((win) => (
+                        <TaskbarTab
+                           key={win.id}
+                           icon={win.icon}
+                           label={win.title}
+                           isActive={win.isActive}
+                           onClick={() => handleTabClick(win.id, win.isActive, win.status === 'minimized')}
+                        />
+                     ))}
                </div>
             </div>
          </div>

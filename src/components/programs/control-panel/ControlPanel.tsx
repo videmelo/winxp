@@ -11,9 +11,18 @@ export default function ControlPanel() {
                <li className="label-tahoma hover:text-white hover:bg-bg-selection py-[2.75px] px-2">Favorites</li>
                <li className="label-tahoma hover:text-white hover:bg-bg-selection py-[2.75px] px-2">Tools</li>
                <li className="label-tahoma hover:text-white hover:bg-bg-selection py-[2.75px] px-2">?</li>
-               <li className="label-tahoma ml-4 text-fg-soft py-[2.75px] px-2 xp-inset-border xp-inset-border-left">
-                  Address
+
+               <li className="px-4 xp-inset-border xp-inset-border-left ml-auto bg-white flex items-center">
+                  <img src="/assets/images/logo-windows.png" className="size-5 pixelated" />
                </li>
+            </ul>
+            <ul className="flex h-9.5">
+               <li className="flex-1 xp-inset-border xp-inset-border-left xp-inset-border-top"></li>
+               <li className="flex-1 xp-inset-border xp-inset-border-left xp-inset-border-top"></li>
+               <li className="flex-1 xp-inset-border xp-inset-border-left xp-inset-border-top"></li>
+            </ul>
+            <ul className="flex h-6 items-center justify-center xp-inset-border xp-inset-border-top">
+               <li className="label-tahoma  text-fg-soft py-[2.75px] px-2">Address</li>
                <li className="self-stretch flex-1">
                   <Dropdown />
                </li>
@@ -22,14 +31,6 @@ export default function ControlPanel() {
                   <button className="xp-window-controls-btn-green xp-window-controls-icon-help"></button>
                   <span className="label-tahoma">OK</span>
                </li>
-               <li className="px-4 xp-inset-border xp-inset-border-left bg-white flex items-center">
-                  <img src="/assets/images/logo-windows.png" className="size-5 pixelated" />
-               </li>
-            </ul>
-            <ul className="flex h-9.5">
-               <li className="flex-1 xp-inset-border xp-inset-border-left xp-inset-border-top"></li>
-               <li className="flex-1 xp-inset-border xp-inset-border-left xp-inset-border-top"></li>
-               <li className="flex-1 xp-inset-border xp-inset-border-left xp-inset-border-top"></li>
             </ul>
          </div>
          <div className="flex flex-1">

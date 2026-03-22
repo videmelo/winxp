@@ -2,6 +2,7 @@ import type React from 'react';
 import ComponentPreview from '../components/programs/component-preview/ComponentPreview';
 import ControlPanel from '../components/programs/control-panel/ControlPanel';
 import Minecraft from '../components/programs/minecraft/Minecraft';
+import Paint from '../components/programs/paint/Paint';
 import {
    programsMetadata,
    folders as foldersMetadata,
@@ -28,6 +29,9 @@ export const programs: Program[] = programsMetadata.map((p) => {
    }
    if (p.id === 'minecraft') {
       return { ...p, exe: Minecraft };
+   }
+   if (p.id === 'paint') {
+      return { ...p, exe: Paint };
    }
    return p;
 });
