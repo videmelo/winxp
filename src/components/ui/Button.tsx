@@ -9,10 +9,10 @@ export function Button({ children, className = '', disabled, hug = false, ...pro
       <div className={`p-px inline-flex flex-col justify-start items-start ${hug ? '' : 'min-w-20'} ${className}`}>
          <button
             disabled={disabled}
-            className={`${hug ? 'px-1.5' : 'self-stretch px-3'} rounded-sm outline-1 -outline-offset-1 inline-flex justify-center items-center overflow-hidden transition-all ${
+            className={`${hug ? 'px-1.5' : 'self-stretch px-3'} py-1 rounded-sm outline-1 -outline-offset-1 inline-flex justify-center items-center overflow-hidden transition-all ${
                disabled
-                  ? 'py-1 bg-stone-100 outline-black/20 ui-button-disabled cursor-not-allowed'
-                  : 'py-0.75 hover:py-1 focus:py-1 active:py-1 ui-button-interactive outline-cyan-800'
+                  ? 'bg-stone-100 outline-black/20 ui-button-disabled cursor-not-allowed'
+                  : 'ui-button-interactive outline-cyan-800'
             }`}
             {...props}
          >

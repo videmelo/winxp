@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useDrag } from '../../hooks/useDrag';
+import { useSound } from '../../hooks/useSound';
 
 interface AgentProps {
    name: string;
@@ -53,7 +54,7 @@ const loadAgentAnimations = async (agentName: string): Promise<AnimationMap> => 
       const manifest = await manifestRes.json();
       return manifest.animations as Record<string, string[]>;
    } catch (error) {
-      console.error(error);
+      console.error('[AGENT] Error:', error);
       return {};
    }
 };
@@ -129,6 +130,14 @@ export default function Agent({ name, fps = 10, initialX, initialY }: AgentProps
       isVisible: false,
       index: 0,
    });
+
+   const { play } = useSound();
+
+   useEffect(() => {
+      if (storyState.isVisible) {
+         play('xp-balloon');
+      }
+   }, [storyState.isVisible, play]);
 
    const storyStateRef = useRef(storyState);
    useEffect(() => {

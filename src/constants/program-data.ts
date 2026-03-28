@@ -9,6 +9,7 @@ export type WindowConfig = {
    titleBarButtons?: TitleBarButton[];
    resizable?: boolean;
    singleInstance?: boolean;
+   isLoading?: boolean;
 };
 
 export type ProgramMetadata = {
@@ -252,6 +253,7 @@ export const programsMetadata: ProgramMetadata[] = [
       windowConfig: {
          defaultSize: { width: 800, height: 600 },
          minSize: { width: 400, height: 300 },
+         isLoading: true,
       },
    },
 ];

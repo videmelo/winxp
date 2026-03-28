@@ -3,6 +3,7 @@ import Separator from '../../assets/tsx/Separator';
 import StartMenu from './StartMenu';
 import ProgramIcon from '../ui/ProgramIcon';
 import { useWindowManager } from '../../hooks/useWindowManager';
+import { useSound } from '../../hooks/useSound';
 
 interface TaskbarTabProps {
    icon: string;
@@ -25,10 +26,12 @@ function TaskbarTab({ icon, label, isActive, onClick }: TaskbarTabProps) {
    );
 }
 
-function StartButton({ onClick }: { onClick?: () => void }) {
+function StartButton({ onClick, isActive }: { onClick?: () => void; isActive?: boolean }) {
    return (
       <div
-         className="xp-taskbar-start-button flex items-center gap-1.5 cursor-pointer h-7.5 w-24.75 relative"
+         className={`xp-taskbar-start-button ${
+            isActive ? 'active' : ''
+         } flex items-center gap-1.5 cursor-pointer h-7.5 w-24.75 relative`}
          onClick={onClick}
       >
          <img src="/assets/icons/system/windows-flag-16.png" className="pixelated ml-2.5" alt="Start" />
@@ -66,6 +69,12 @@ function Taskbar() {
    const [startMenuOpen, setStartMenuOpen] = React.useState(false);
    const containerRef = React.useRef<HTMLDivElement>(null);
    const { windows, focusWindow, minimizeWindow, openProgram } = useWindowManager();
+   const { play } = useSound();
+
+   const handleStartClick = () => {
+      play('xp-menu-command');
+      setStartMenuOpen((prev) => !prev);
+   };
 
    React.useEffect(() => {
       function handleClick(event: MouseEvent) {
@@ -100,7 +109,7 @@ function Taskbar() {
                ) : null}
             </div>
             <div className="flex gap-1.5 items-center">
-               <StartButton onClick={() => setStartMenuOpen((prev) => !prev)} />
+               <StartButton onClick={handleStartClick} isActive={startMenuOpen} />
                <Separator />
                <div className="flex gap-1.5 items-center flex-1 min-w-0 overflow-hidden">
                   {windows

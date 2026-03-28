@@ -47,7 +47,8 @@
          background-image: svg-load('./assets/svgs/start-btn-bg-hover.svg');
       }
 
-      &:active {
+      &:active,
+      &.active {
          background-image: svg-load('./assets/svgs/start-btn-bg-active.svg');
       }
 

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import ProgramIcon from '../ui/ProgramIcon';
 import { useWindowManager } from '../../hooks/useWindowManager';
+import { useSound } from '../../hooks/useSound';
 import { programsMetadata, folders } from '../../constants/program-data';
 
 const desktopIconIds = ['my-computer', 'my-documents', 'recycle-bin', 'internet-explorer', 'minecraft', 'paint'];
@@ -11,7 +12,13 @@ type Position = { x: number; y: number };
 
 export default function DesktopIcons() {
    const { openProgram } = useWindowManager();
+   const { play } = useSound();
    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+
+   const handleOpenProgram = (id: string) => {
+      play('xp-start');
+      openProgram(id);
+   };
 
    const positions = useMemo(() => {
       const pos: Record<string, Position> = {};
@@ -153,7 +160,7 @@ export default function DesktopIcons() {
                   onPointerDown={(e) => handleIconPointerDown(e, id)}
                   onDoubleClick={(e) => {
                      e.stopPropagation();
-                     openProgram(id);
+                     handleOpenProgram(id);
                   }}
                   onDragStart={(e) => e.preventDefault()}
                >

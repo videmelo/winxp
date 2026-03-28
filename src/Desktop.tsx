@@ -3,9 +3,16 @@ import Window from './components/layout/Window';
 import { WindowManagerProvider, useWindowManager } from './hooks/useWindowManager';
 import Agent from './components/ui/Agent';
 import DesktopIcons from './components/layout/DesktopIcons';
+import { useEffect } from 'react';
+import { useSound } from './hooks/useSound';
 
 function DesktopContent() {
    const { windows } = useWindowManager();
+   const { play } = useSound();
+
+   useEffect(() => {
+      play('xp-startup', { volume: 0.5 });
+   }, [play]);
 
    const isAnyWindowLoading = windows.some((w) => w.isLoading);
 

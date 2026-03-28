@@ -3,6 +3,7 @@ import ProgramIcon from '../ui/ProgramIcon';
 import { useWindowManager, type WindowState } from '../../hooks/useWindowManager';
 import { useDrag } from '../../hooks/useDrag';
 import { useWindowResize, type ResizeEdge } from '../../hooks/useWindowResize';
+import { useSound } from '../../hooks/useSound';
 
 const EDGE_SIZE = 5;
 
@@ -49,6 +50,17 @@ function ResizeHandles({ windowId }: { windowId: string }) {
 
 function TitleBar({ win }: { win: WindowState }) {
    const { moveWindow, focusWindow, closeWindow, minimizeWindow, toggleMaximize } = useWindowManager();
+   const { play } = useSound();
+
+   const handleMinimize = () => {
+      play('xp-minimize');
+      minimizeWindow(win.id);
+   };
+
+   const handleToggleMaximize = () => {
+      play('xp-restore');
+      toggleMaximize(win.id);
+   };
 
    const { onPointerDown } = useDrag({
       onDragStart: () => {
@@ -71,7 +83,7 @@ function TitleBar({ win }: { win: WindowState }) {
       <div
          className={`xp-window-title-bar-chrome p-1 flex gap-1 items-center justify-between overflow-hidden`}
          onPointerDown={onPointerDown}
-         onDoubleClick={() => hasMaximize && toggleMaximize(win.id)}
+         onDoubleClick={() => hasMaximize && handleToggleMaximize()}
       >
          <div className="xp-window-title-bar-children flex items-center relative gap-1 min-w-0 flex-1">
             <ProgramIcon id={win.icon} size="sm" />
@@ -88,7 +100,7 @@ function TitleBar({ win }: { win: WindowState }) {
                <button
                   className="xp-window-controls-btn-blue xp-window-controls-icon-minimize"
                   onPointerDown={(e) => e.stopPropagation()}
-                  onClick={() => minimizeWindow(win.id)}
+                  onClick={handleMinimize}
                />
             )}
             {hasMaximize && (
@@ -97,7 +109,7 @@ function TitleBar({ win }: { win: WindowState }) {
                      win.status === 'maximized' ? 'xp-window-controls-icon-reduce' : 'xp-window-controls-icon-maximize'
                   }`}
                   onPointerDown={(e) => e.stopPropagation()}
-                  onClick={() => toggleMaximize(win.id)}
+                  onClick={handleToggleMaximize}
                />
             )}
             {hasClose && (
@@ -146,7 +158,11 @@ function Window({ windowId, children }: WindowProps) {
          <TitleBar win={win} />
          <div className="xp-window-content flex-1 flex overflow-hidden bg-bg-default-window">
             <div className="flex-1 flex p-0.5">
-               {win.exe ? <win.exe windowId={win.id} onLoaded={() => setWindowLoaded(win.id)} /> : children}
+               {win.exe ? (
+                  <win.exe windowId={win.id} onLoaded={() => setWindowLoaded(win.id)} params={win.params} />
+               ) : (
+                  children
+               )}
             </div>
          </div>
          {!isMaximized && !isMinimized && win.resizable && !isLoading && <ResizeHandles windowId={win.id} />}

@@ -2,6 +2,7 @@ import React from 'react';
 
 import { programs, folders } from '../../utils/programs.ts';
 import { useWindowManager } from '../../hooks/useWindowManager';
+import { useSound } from '../../hooks/useSound';
 import { SYSTEM_TREE, findSystemTreeNodeById } from '../../constants/system-tree';
 
 type ProgramItem = {
@@ -157,15 +158,24 @@ function RightPane({ sections, onLaunch }: { sections: RightPaneItem[][]; onLaun
 }
 
 function Footer() {
+   const { play } = useSound();
    const actions = [
-      { label: 'Log off', btnClass: 'xp-window-controls-btn-yellow xp-window-controls-icon-logoff' },
-      { label: 'Turn off', btnClass: 'xp-window-controls-btn-red xp-window-controls-icon-poweroff' },
+      { 
+         label: 'Log off', 
+         btnClass: 'xp-window-controls-btn-yellow xp-window-controls-icon-logoff',
+         onClick: () => play('xp-logoff-sound')
+      },
+      { 
+         label: 'Turn off', 
+         btnClass: 'xp-window-controls-btn-red xp-window-controls-icon-poweroff',
+         onClick: () => play('xp-shutdown')
+      },
    ];
 
    return (
       <div className="flex justify-end items-center h-10 w-full gap-4 px-2.5">
          {actions.map((action, idx) => (
-            <div key={idx} className="flex items-center gap-1 p-0.5 cursor-pointer">
+            <div key={idx} className="flex items-center gap-1 p-0.5 cursor-pointer" onClick={action.onClick}>
                <div className={action.btnClass} />
                <p className="label-tahoma text-white">{action.label}</p>
             </div>

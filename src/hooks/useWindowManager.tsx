@@ -7,6 +7,7 @@ import {
    type TitleBarButton,
    type WindowConfig,
 } from '../utils/programs';
+import ErrorDialog from '../components/ui/ErrorDialog';
 
 const registry = new Map<string, Program | Folder>([...programs, ...folders].map((item) => [item.id, item]));
 
@@ -20,7 +21,7 @@ export type WindowState = {
    programId: string;
    title: string;
    icon: string;
-   exe?: React.FC<{ windowId: string; onLoaded?: () => void }>;
+   exe?: React.FC<{ windowId: string; onLoaded?: () => void; params?: any }>;
    position: WindowPosition;
    prevPosition: WindowPosition | null;
    size: WindowSize;
@@ -28,19 +29,20 @@ export type WindowState = {
    minSize: WindowSize;
    maxSize: WindowSize | null;
    status: WindowStatus;
-   preMinimizedStatus?: WindowStatus; // Added to track status before minimize
+   preMinimizedStatus?: WindowStatus;
    zIndex: number;
    isActive: boolean;
    titleBarButtons: TitleBarButton[];
    resizable: boolean;
    isLoading?: boolean;
+   params?: any;
 };
 
 export type OpenWindowOptions = {
    programId: string;
    title: string;
    icon: string;
-   exe?: React.FC<{ windowId: string; onLoaded?: () => void }>;
+   exe?: React.FC<{ windowId: string; onLoaded?: () => void; params?: any }>;
    position?: WindowPosition;
    size?: WindowSize;
    minSize?: WindowSize;
@@ -49,6 +51,7 @@ export type OpenWindowOptions = {
    titleBarButtons?: TitleBarButton[];
    resizable?: boolean;
    isLoading?: boolean;
+   params?: any;
 };
 
 export type OpenProgramOptions = {
@@ -107,6 +110,7 @@ function reducer(state: ManagerState, action: Action): ManagerState {
             titleBarButtons,
             resizable,
             isLoading,
+            params,
          } = action.payload;
          const id = generateId();
          const zIndex = state.nextZIndex;
@@ -135,10 +139,11 @@ function reducer(state: ManagerState, action: Action): ManagerState {
             maxSize: maxSize ?? null,
             status: initialStatus,
             zIndex,
-            isActive: !isLoading, // Don't focus while loading
+            isActive: !isLoading,
             titleBarButtons: titleBarButtons ?? ['minimize', 'maximize', 'close'],
             resizable: resizable ?? true,
             isLoading: isLoading ?? false,
+            params,
          };
 
          const updatedWindows = isLoading
@@ -182,13 +187,13 @@ function reducer(state: ManagerState, action: Action): ManagerState {
             windows: state.windows.map((w) =>
                w.id === action.payload.id
                   ? {
-                       ...w,
-                       prevPosition: w.position,
-                       prevSize: w.size,
-                       position: { x: 0, y: 0 },
-                       size: { width: window.innerWidth, height: window.innerHeight - 30 },
-                       status: 'maximized' as WindowStatus,
-                    }
+                     ...w,
+                     prevPosition: w.position,
+                     prevSize: w.size,
+                     position: { x: 0, y: 0 },
+                     size: { width: window.innerWidth, height: window.innerHeight - 30 },
+                     status: 'maximized' as WindowStatus,
+                  }
                   : w,
             ),
          };
@@ -201,13 +206,13 @@ function reducer(state: ManagerState, action: Action): ManagerState {
                state.windows.map((w) =>
                   w.id === action.payload.id
                      ? {
-                          ...w,
-                          position: w.prevPosition ?? w.position,
-                          size: w.prevSize ?? w.size,
-                          prevPosition: null,
-                          prevSize: null,
-                          status: 'normal' as WindowStatus,
-                       }
+                        ...w,
+                        position: w.prevPosition ?? w.position,
+                        size: w.prevSize ?? w.size,
+                        prevPosition: null,
+                        prevSize: null,
+                        status: 'normal' as WindowStatus,
+                     }
                      : w,
                ),
                action.payload.id,
@@ -232,10 +237,10 @@ function reducer(state: ManagerState, action: Action): ManagerState {
                state.windows.map((w) =>
                   w.id === action.payload.id
                      ? {
-                          ...w,
-                          zIndex,
-                          status: w.status === 'minimized' ? (w.prevSize ? 'maximized' : 'normal') : w.status,
-                       }
+                        ...w,
+                        zIndex,
+                        status: w.status === 'minimized' ? (w.prevSize ? 'maximized' : 'normal') : w.status,
+                     }
                      : w,
                ),
                action.payload.id,
@@ -326,7 +331,7 @@ export function WindowManagerProvider({ children }: { children: React.ReactNode 
       (programId: string, options?: OpenProgramOptions) => {
          const item = registry.get(programId);
          if (!item) {
-            console.warn(`[WindowManager] Program not found: "${programId}"`);
+            console.warn(`[WINDOW] Program not found: "${programId}"`);
             return;
          }
 
@@ -342,7 +347,26 @@ export function WindowManagerProvider({ children }: { children: React.ReactNode 
          }
 
          const exe = 'exe' in item ? item.exe : undefined;
-         const isLoading = programId === 'paint'; // We explicitly set paint to loading
+         if (!exe) {
+            dispatch({
+               type: 'OPEN_WINDOW',
+               payload: {
+                  programId: 'error-dialog',
+                  title: 'System Error',
+                  icon: 'error-dialog',
+                  exe: ErrorDialog,
+                  params: {
+                     message: `The program "${item.name}" does not have a configured executable.`,
+                     type: 'error',
+                  },
+                  size: { width: 380, height: 160 },
+                  resizable: false,
+                  titleBarButtons: ['close'],
+               },
+            });
+            return;
+         }
+         const isLoading = cfg?.isLoading ?? false;
 
          dispatch({
             type: 'OPEN_WINDOW',
@@ -432,6 +456,6 @@ export function useWindowManager() {
    const context = useContext(WindowManagerContext);
    if (!context) {
       throw new Error('useWindowManager must be used within a WindowManagerProvider');
-   }
+   } 
    return context;
 }

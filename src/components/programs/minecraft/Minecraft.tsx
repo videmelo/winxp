@@ -55,7 +55,7 @@ export default function Minecraft() {
          for (const reg of registrations) {
             if (reg.scope.includes(SW_SCOPE)) {
                await reg.unregister();
-               console.log('Cleaned up Service Worker');
+               console.log('[MINECRAFT] Cleaned up Service Worker');
             }
          }
 
@@ -65,7 +65,7 @@ export default function Minecraft() {
             for (const key of cacheKeys) {
                if (key === CACHE_NAME) {
                   await caches.delete(key);
-                  console.log('Cleaned up Minecraft Cache');
+                  console.log('[MINECRAFT] Cleaned up Minecraft Cache');
                }
             }
          }
@@ -103,7 +103,7 @@ export default function Minecraft() {
             checkStatus();
             registration.addEventListener('updatefound', checkStatus);
          } catch (err) {
-            console.error('Init error:', err);
+            console.error('[MINECRAFT] Init error:', err);
             if (mounted) setError('Failed to start Minecraft.');
          }
       };
