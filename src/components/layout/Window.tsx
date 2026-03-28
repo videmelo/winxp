@@ -156,8 +156,8 @@ function Window({ windowId, children }: WindowProps) {
          }}
       >
          <TitleBar win={win} />
-         <div className="xp-window-content flex-1 flex overflow-hidden bg-bg-default-window">
-            <div className="flex-1 flex p-0.5">
+         <div className="xp-window-content flex-1 flex flex-col overflow-hidden bg-bg-default-window">
+            <div className="flex-1 flex flex-col p-1 min-h-0">
                {win.exe ? (
                   <win.exe windowId={win.id} onLoaded={() => setWindowLoaded(win.id)} params={win.params} />
                ) : (

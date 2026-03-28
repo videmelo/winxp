@@ -33,16 +33,16 @@ export default function ErrorDialog({ windowId, params }: ErrorDialogProps) {
       : '/assets/icons/ui/error-32.png';
 
    return (
-      <div className="flex flex-col flex-1 bg-[#ece9d8] p-3 body-tahoma text-black">
-         <div className="flex items-start gap-4 mb-4 flex-1 mt-2 px-2">
-            <img src={iconSrc} alt={type} className="pixelated shrink-0 w-8 h-8" />
-            <div className="pt-1 select-text leading-tight break-words max-w-[280px]">
+      <div className="flex flex-col h-full bg-[#ece9d8] p-3 body-tahoma text-black overflow-hidden shadow-[inset_1px_1px_0px_#ffffff]">
+         <div className="flex items-start gap-4 mb-3 px-2 flex-1 min-h-0">
+            <img src={iconSrc} alt={type} className="pixelated shrink-0 w-8 h-8 mt-1" />
+            <div className="flex-1 overflow-y-auto min-h-0 pr-2 select-text leading-tight break-words pt-1">
                {message}
             </div>
          </div>
          
-         <div className="flex justify-center pb-2">
-            <Button onClick={() => closeWindow(windowId)}>
+         <div className="flex justify-center shrink-0 pt-1 pb-1">
+            <Button onClick={() => closeWindow(windowId)} className="min-w-[75px]">
                OK
             </Button>
          </div>
