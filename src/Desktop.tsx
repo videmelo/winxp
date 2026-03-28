@@ -19,7 +19,7 @@ function DesktopContent() {
             <Window key={win.id} windowId={win.id} />
          ))}
 
-         <Agent fcsUrl="/rover.fcs" />
+         <Agent name="rover" />
          <Taskbar />
       </div>
    );

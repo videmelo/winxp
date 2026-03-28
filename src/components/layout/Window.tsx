@@ -111,15 +111,16 @@ function Window({ windowId, children }: WindowProps) {
    const { windows, focusWindow, setWindowLoaded } = useWindowManager();
    const win = windows.find((w) => w.id === windowId);
 
-   if (!win || win.status === 'minimized') return null;
+   if (!win) return null;
 
+   const isMinimized = win.status === 'minimized';
    const isMaximized = win.status === 'maximized';
    const isLoading = win.isLoading;
 
    return (
       <div
          className={`absolute flex flex-col xp-window-frame ${!win.isActive ? 'inactive' : ''} ${
-            isLoading ? 'opacity-0 pointer-events-none' : ''
+            isLoading || isMinimized ? 'opacity-0 pointer-events-none' : ''
          }`}
          style={{
             left: win.position.x,
@@ -138,7 +139,7 @@ function Window({ windowId, children }: WindowProps) {
                {win.exe ? <win.exe windowId={win.id} onLoaded={() => setWindowLoaded(win.id)} /> : children}
             </div>
          </div>
-         {!isMaximized && win.resizable && !isLoading && <ResizeHandles windowId={win.id} />}
+         {!isMaximized && !isMinimized && win.resizable && !isLoading && <ResizeHandles windowId={win.id} />}
       </div>
    );
 }

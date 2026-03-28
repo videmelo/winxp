@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 
 interface AgentProps {
-   fcsUrl: string;
+   name: string;
    fps?: number;
    initialX?: number;
    initialY?: number;
@@ -41,8 +41,8 @@ const processAnimationFrames = async (
    return frames.map((frameFile) => `${folderName}/${animName}/${frameFile}${versionSuffix}`);
 };
 
-const loadAgentAnimations = async (fcsUrl: string): Promise<AnimationMap> => {
-   const folderName = fcsUrl.replace(/\.[^/.]+$/, '');
+const loadAgentAnimations = async (agentName: string): Promise<AnimationMap> => {
+   const folderName = `/${agentName}`;
    const manifestUrl = `${folderName}/manifest.json`;
    const manifestRes = await fetch(manifestUrl, { cache: 'no-store' });
 
@@ -99,7 +99,7 @@ const ROVER_STORY = [
    { text: "I'll let you explore the desktop now. Just click on me if you want to interact!", anim: 'Acknowledge' },
 ];
 
-export default function Agent({ fcsUrl, fps = 10, initialX, initialY }: AgentProps) {
+export default function Agent({ name, fps = 10, initialX, initialY }: AgentProps) {
    const imgRef = useRef<HTMLImageElement>(null);
    const [isReady, setIsReady] = useState(false);
    const animationsRef = useRef<Record<string, string[]>>({});
@@ -222,7 +222,7 @@ export default function Agent({ fcsUrl, fps = 10, initialX, initialY }: AgentPro
    useEffect(() => {
       let isMounted = true;
 
-      loadAgentAnimations(fcsUrl)
+      loadAgentAnimations(name)
          .then((loadedAnimations) => {
             if (!isMounted) return;
             animationsRef.current = loadedAnimations;
@@ -237,7 +237,7 @@ export default function Agent({ fcsUrl, fps = 10, initialX, initialY }: AgentPro
          isMounted = false;
          stopAnimation();
       };
-   }, [fcsUrl, stopAnimation]);
+   }, [name, stopAnimation]);
 
    const handleBubbleClick = useCallback(
       (e: React.MouseEvent) => {
