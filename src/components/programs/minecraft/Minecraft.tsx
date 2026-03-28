@@ -21,15 +21,18 @@ export default function Minecraft() {
 
       let step = 0;
       const statusTimer = window.setInterval(() => {
-         step = (step + 1) % status.length;
-         setLaunch(status[step]);
+         if (step < status.length - 1) {
+            step++;
+            setLaunch(status[step]);
+         } else {
+            window.clearInterval(statusTimer);
+         }
       }, 1400);
 
       const progressTimer = window.setInterval(() => {
          setProgress((prev) => {
             if (prev >= 94) return prev;
 
-            // Ease-out progress so the bar keeps moving while waiting for activation.
             const next = prev + Math.max(1, Math.round((96 - prev) * 0.08));
             return Math.min(94, next);
          });

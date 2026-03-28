@@ -1,7 +1,7 @@
 import type React from 'react';
 import ProgramIcon from '../ui/ProgramIcon';
 import { useWindowManager, type WindowState } from '../../hooks/useWindowManager';
-import { useWindowDrag } from '../../hooks/useWindowDrag';
+import { useDrag } from '../../hooks/useDrag';
 import { useWindowResize, type ResizeEdge } from '../../hooks/useWindowResize';
 
 const EDGE_SIZE = 5;
@@ -48,8 +48,18 @@ function ResizeHandles({ windowId }: { windowId: string }) {
 }
 
 function TitleBar({ win }: { win: WindowState }) {
-   const { closeWindow, minimizeWindow, toggleMaximize } = useWindowManager();
-   const { onPointerDown } = useWindowDrag(win.id);
+   const { moveWindow, focusWindow, closeWindow, minimizeWindow, toggleMaximize } = useWindowManager();
+
+   const { onPointerDown } = useDrag({
+      onDragStart: () => {
+         if (win.status === 'maximized') return false;
+         focusWindow(win.id);
+         return { x: win.position.x, y: win.position.y };
+      },
+      onDrag: (x, y) => {
+         moveWindow(win.id, { x, y });
+      },
+   });
 
    const buttons = win.titleBarButtons;
    const hasMinimize = buttons.includes('minimize');
