@@ -105,9 +105,8 @@ function TitleBar({ win }: { win: WindowState }) {
             )}
             {hasMaximize && (
                <button
-                  className={`xp-window-controls-btn-blue ${
-                     win.status === 'maximized' ? 'xp-window-controls-icon-reduce' : 'xp-window-controls-icon-maximize'
-                  }`}
+                  className={`xp-window-controls-btn-blue ${win.status === 'maximized' ? 'xp-window-controls-icon-reduce' : 'xp-window-controls-icon-maximize'
+                     }`}
                   onPointerDown={(e) => e.stopPropagation()}
                   onClick={handleToggleMaximize}
                />
@@ -141,9 +140,8 @@ function Window({ windowId, children }: WindowProps) {
 
    return (
       <div
-         className={`absolute flex flex-col xp-window-frame ${!win.isActive ? 'inactive' : ''} ${
-            isLoading || isMinimized ? 'opacity-0 pointer-events-none' : ''
-         }`}
+         className={`absolute flex flex-col xp-window-frame ${!win.isActive ? 'inactive' : ''} ${isLoading || isMinimized ? 'opacity-0 pointer-events-none' : ''
+            }`}
          style={{
             left: win.position.x,
             top: win.position.y,
@@ -157,7 +155,7 @@ function Window({ windowId, children }: WindowProps) {
       >
          <TitleBar win={win} />
          <div className="xp-window-content flex-1 flex flex-col overflow-hidden bg-bg-default-window">
-            <div className="flex-1 flex flex-col p-1 min-h-0">
+            <div className="flex-1 flex flex-col p-0.5 min-h-0">
                {win.exe ? (
                   <win.exe windowId={win.id} onLoaded={() => setWindowLoaded(win.id)} params={win.params} />
                ) : (
