@@ -3,7 +3,7 @@ import path from 'node:path';
 import JSZip from 'jszip';
 import { Jimp } from 'jimp';
 
-const FCS_FILE = '/public/rover/rover.fcs';
+const FCS_FILE = './public/rover/rover.fcs';
 const OUTPUT_DIR = './public/rover';
 const MANIFEST_FILE = path.join(OUTPUT_DIR, 'manifest.json');
 
@@ -40,8 +40,9 @@ async function extract() {
    const sourceStats = fs.statSync(FCS_FILE);
    const zip = await JSZip.loadAsync(data);
 
-   fs.rmSync(OUTPUT_DIR, { recursive: true, force: true });
-   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+   if (!fs.existsSync(OUTPUT_DIR)) {
+      fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+   }
 
    const manifest = {
       version: String(sourceStats.mtimeMs),

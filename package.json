@@ -8,8 +8,7 @@
       "build": "tsc -b && vite build",
       "lint": "eslint .",
       "format": "prettier --write .",
-      "preview": "vite preview",
-      "extract-agent": "node scripts/extract-agent.mjs"
+      "preview": "vite preview"
    },
    "dependencies": {
       "jszip": "^3.10.1",
