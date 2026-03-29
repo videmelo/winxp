@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
+import { useErrorDialog } from '../../../hooks/useErrorDialog';
+import { useWindowManager } from '../../../hooks/useWindowManager';
 
 const CACHE_NAME = 'minecraft-session-cache';
 const SW_SCOPE = '/minecraft/';
 
-export default function Minecraft() {
+export default function Minecraft({ windowId }: { windowId: string }) {
+   const { showError } = useErrorDialog();
+   const { closeWindow } = useWindowManager();
    const [isReady, setIsReady] = useState(false);
-   const [error, setError] = useState<string | null>(null);
    const [progress, setProgress] = useState(8);
    const [launch, setLaunch] = useState('Preparing clean environment...');
 
@@ -104,7 +107,17 @@ export default function Minecraft() {
             registration.addEventListener('updatefound', checkStatus);
          } catch (err) {
             console.error('[MINECRAFT] Init error:', err);
-            if (mounted) setError('Failed to start Minecraft.');
+            if (mounted) {
+               const errorMsg = err instanceof Error ? err.message : String(err);
+               const isStorageError = errorMsg.includes('storage') || errorMsg.includes('SecurityError');
+
+               const message = isStorageError
+                  ? 'Storage access is blocked. Please disable Incognito mode or allow cookies for this site to run Minecraft Classic.'
+                  : `Failed to start Minecraft: ${errorMsg}`;
+
+               showError(message, 'Minecraft Classic Error');
+               closeWindow(windowId);
+            }
          }
       };
 
@@ -121,9 +134,7 @@ export default function Minecraft() {
 
    return (
       <div className="m-0 flex h-full w-full items-center justify-center overflow-hidden bg-black p-0">
-         {error ? (
-            <div className="font-mono text-red-500">{error}</div>
-         ) : !isReady ? (
+         {!isReady ? (
             <div className="w-[min(420px,calc(100%-40px))] border border-white bg-black p-5 font-mono text-white">
                <div className="mb-2 text-lg font-bold">Minecraft Classic</div>
                <div className="mb-3.5 text-xs text-white">{launch}</div>

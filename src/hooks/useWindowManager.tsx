@@ -9,7 +9,13 @@ import {
 } from '../utils/programs';
 import ErrorDialog from '../components/ui/ErrorDialog';
 
-const registry = new Map<string, Program | Folder>([...programs, ...folders].map((item) => [item.id, item]));
+let registry: Map<string, Program | Folder> | null = null;
+function getRegistry() {
+   if (!registry) {
+      registry = new Map<string, Program | Folder>([...programs, ...folders].map((item) => [item.id, item]));
+   }
+   return registry;
+}
 
 export type WindowStatus = 'normal' | 'minimized' | 'maximized';
 
@@ -329,7 +335,7 @@ export function WindowManagerProvider({ children }: { children: React.ReactNode 
 
    const openProgram = useCallback(
       (programId: string, options?: OpenProgramOptions) => {
-         const item = registry.get(programId);
+         const item = getRegistry().get(programId);
          if (!item) {
             console.warn(`[WINDOW] Program not found: "${programId}"`);
             return;
