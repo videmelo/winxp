@@ -26,7 +26,7 @@ function ProgramIcon({ id, size, className = '' }: ProgramIconProps) {
    const icon = item.icons[size as keyof typeof item.icons];
    if (!icon) return null;
 
-   return <img src={icon} alt={item.name} className={`pixelated ${sizeClasses[size]} ${className}`} />;
+   return <img src={icon} alt={item.name} className={`pixelated ${sizeClasses[size]} ${className}`} draggable={false} />;
 }
 
 export default ProgramIcon;

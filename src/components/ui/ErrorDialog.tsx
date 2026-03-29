@@ -33,7 +33,7 @@ export default function ErrorDialog({ windowId, params }: ErrorDialogProps) {
    return (
       <div className="flex flex-col h-full bg-[#ece9d8] p-3 body-tahoma text-black overflow-hidden shadow-[inset_1px_1px_0px_#ffffff]">
          <div className="flex items-start gap-4 mb-3 px-2 flex-1 min-h-0">
-            <img src={iconSrc} alt={type} className="pixelated shrink-0 w-8 h-8 mt-1" />
+            <img src={iconSrc} alt={type} className="pixelated shrink-0 w-8 h-8 mt-1" draggable={false} />
             <div className="flex-1 overflow-y-auto min-h-0 pr-2 select-text leading-tight wrap-break-word pt-1">
                {message}
             </div>

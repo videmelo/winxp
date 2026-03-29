@@ -13,7 +13,7 @@ export default function ControlPanel() {
                <li className="label-tahoma hover:text-white hover:bg-bg-selection py-[2.75px] px-2">?</li>
 
                <li className="px-4 xp-inset-border xp-inset-border-left ml-auto bg-white flex items-center">
-                  <img src="/assets/images/logo-windows.png" className="size-5 pixelated" />
+                  <img src="/assets/images/logo-windows.png" className="size-5 pixelated" draggable={false} />
                </li>
             </ul>
             <ul className="flex h-9.5">

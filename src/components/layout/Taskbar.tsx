@@ -34,7 +34,7 @@ function StartButton({ onClick, isActive }: { onClick?: () => void; isActive?: b
          } flex items-center gap-1.5 cursor-pointer h-7.5 w-24.75 relative`}
          onClick={onClick}
       >
-         <img src="/assets/icons/system/windows-flag-16.png" className="pixelated ml-2.5" alt="Start" />
+         <img src="/assets/icons/system/windows-flag-16.png" className="pixelated ml-2.5" alt="Start" draggable={false} />
          <span className="italic font-bold text-[18px] leading-5.5 text-white">start</span>
       </div>
    );
@@ -56,8 +56,8 @@ function SystemTray() {
    return (
       <div className="xp-taskbar-system-tray flex justify-end items-center p-0.75 pr-2 pl-2.75 gap-px h-7.5 relative">
          <span className="xp-taskbar-system-tray-overflow absolute -left-2.25" />
-         <img src="/assets/icons/system/sound-16.png" className="pixelated cursor-pointer" alt="Volume" />
-         <img src="/assets/icons/network/network-favorites-16.png" className="pixelated cursor-pointer" alt="Network" />
+         <img src="/assets/icons/system/sound-16.png" className="pixelated cursor-pointer" alt="Volume" draggable={false} />
+         <img src="/assets/icons/network/network-favorites-16.png" className="pixelated cursor-pointer" alt="Network" draggable={false} />
          <div className="flex justify-end items-center grow-0 shrink-0 relative gap-2.5 px-1">
             <p className="grow-0 shrink-0 text-[11px] text-left text-white">{time}</p>
          </div>

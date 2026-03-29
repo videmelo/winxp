@@ -101,7 +101,7 @@ export default function Dropdown() {
             <span className="self-stretch p-px inline-flex justify-start items-center gap-1 w-full">
                {selectedNode?.iconId ? <ProgramIcon id={selectedNode.iconId} size="sm" /> : null}
                {!selectedNode?.iconId && selectedNode?.iconPath ? (
-                  <img src={selectedNode.iconPath} alt={selectedNode.label} className="size-4 pixelated" />
+                  <img src={selectedNode.iconPath} alt={selectedNode.label} className="size-4 pixelated" draggable={false} />
                ) : null}
                <input
                   ref={inputRef}

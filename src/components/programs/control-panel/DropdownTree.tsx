@@ -85,7 +85,7 @@ export default function DropdownTree({
 
                   {node.iconId ? <ProgramIcon id={node.iconId} size="sm" /> : null}
                   {!node.iconId && node.iconPath ? (
-                     <img src={node.iconPath} alt={node.label} className="size-4 pixelated" />
+                     <img src={node.iconPath} alt={node.label} className="size-4 pixelated" draggable={false} />
                   ) : null}
                   <span className="label-tahoma truncate">{node.label}</span>
                </button>

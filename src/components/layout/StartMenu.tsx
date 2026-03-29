@@ -70,7 +70,7 @@ const controlPanelTreeIds =
 function Header({ username, avatarUrl }: { username: string; avatarUrl: string }) {
    return (
       <div className="w-full h-16 flex p-1.5 items-center gap-2">
-         <img src={avatarUrl} alt="Avatar" className="xp-startmenu-avatar size-13" />
+         <img src={avatarUrl} alt="Avatar" className="xp-startmenu-avatar size-13" draggable={false} />
          <p className="xp-startmenu-username">{username}</p>
       </div>
    );
@@ -93,7 +93,7 @@ function LeftPane({
                className="flex items-center gap-1 p-px hover:bg-xp-blue-selection w-full hover:text-white! group cursor-pointer"
                onClick={() => onLaunch?.(program.id)}
             >
-               <img src={program.icon} className="pixelated size-8" />
+               <img src={program.icon} className="pixelated size-8" draggable={false} />
                <div className="flex flex-col justify-start items-start grow relative">
                   <p className="label-bold-tahoma">{program.name}</p>
                   {program.label ? <p className="label-tahoma">{program.label}</p> : null}
@@ -109,7 +109,7 @@ function LeftPane({
                className="flex items-center gap-1 p-px hover:bg-xp-blue-selection w-full hover:text-white! group cursor-pointer"
                onClick={() => onLaunch?.(program.id)}
             >
-               <img src={program.icon} className="pixelated size-8" />
+               <img src={program.icon} className="pixelated size-8" draggable={false} />
                <div className="flex flex-col justify-start items-start grow relative">
                   <p className="label-tahoma text-[#373738] group-hover:text-white">{program.name}</p>
                </div>
@@ -137,7 +137,7 @@ function RightPane({ sections, onLaunch }: { sections: RightPaneItem[][]; onLaun
                      onClick={() => onLaunch?.(item.id)}
                   >
                      <div className="size-6 relative">
-                        <img src={item.icon} className="pixelated size-6" />
+                        <img src={item.icon} className="pixelated size-6" draggable={false} />
                      </div>
                      <p
                         className={`${item.isBold ? 'label-bold-tahoma' : 'label-tahoma group-hover:text-white'} text-[#0a236a]`}

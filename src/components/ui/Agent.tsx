@@ -301,7 +301,7 @@ export default function Agent({ name, fps = 10, initialX, initialY }: AgentProps
             width="80"
             height="80"
             alt="Desktop Agent"
-            draggable="false"
+            draggable={false}
             onPointerDown={handlePointerDown}
             style={{ cursor: 'inherit' }}
          />
