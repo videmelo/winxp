@@ -130,7 +130,7 @@ export default function Minecraft({ windowId }: { windowId: string }) {
          window.removeEventListener('beforeunload', fullCleanup);
          fullCleanup(); // Unregister when closing the window inside Windows XP
       };
-   }, []);
+   }, [closeWindow, showError, windowId]);
 
    return (
       <div className="m-0 flex h-full w-full items-center justify-center overflow-hidden bg-black p-0">

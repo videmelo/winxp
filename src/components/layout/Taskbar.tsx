@@ -15,8 +15,9 @@ interface TaskbarTabProps {
 function TaskbarTab({ icon, label, isActive, onClick }: TaskbarTabProps) {
    return (
       <div
-         className={`xp-taskbar-program-tab ${isActive ? 'active' : ''
-            } flex items-center gap-0.75 px-2.5 py-1 pr-3.75 cursor-pointer text-white w-40 min-w-9 h-6.25`}
+         className={`xp-taskbar-program-tab ${
+            isActive ? 'active' : ''
+         } flex items-center gap-0.75 px-2.5 py-1 pr-3.75 cursor-pointer text-white w-40 min-w-9 h-6.25`}
          onClick={onClick}
       >
          <ProgramIcon id={icon} size="sm" />
@@ -28,8 +29,9 @@ function TaskbarTab({ icon, label, isActive, onClick }: TaskbarTabProps) {
 function StartButton({ onClick, isActive }: { onClick?: () => void; isActive?: boolean }) {
    return (
       <div
-         className={`xp-taskbar-start-button ${isActive ? 'active' : ''
-            } flex items-center gap-1.5 cursor-pointer h-7.5 w-24.75 relative`}
+         className={`xp-taskbar-start-button ${
+            isActive ? 'active' : ''
+         } flex items-center gap-1.5 cursor-pointer h-7.5 w-24.75 relative`}
          onClick={onClick}
       >
          <img src="/assets/icons/system/windows-flag-16.png" className="pixelated ml-2.5" alt="Start" />

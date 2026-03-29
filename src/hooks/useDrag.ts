@@ -52,10 +52,7 @@ export function useDrag({ onDragStart, onDrag, onDragEnd }: DragOptions = {}) {
             dragData.current.hasDragged = true;
 
             if (onDrag) {
-               onDrag(
-                  ev.clientX - dragData.current.offsetX,
-                  ev.clientY - dragData.current.offsetY
-               );
+               onDrag(ev.clientX - dragData.current.offsetX, ev.clientY - dragData.current.offsetY);
             }
          };
 

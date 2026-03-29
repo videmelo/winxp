@@ -105,8 +105,9 @@ function TitleBar({ win }: { win: WindowState }) {
             )}
             {hasMaximize && (
                <button
-                  className={`xp-window-controls-btn-blue ${win.status === 'maximized' ? 'xp-window-controls-icon-reduce' : 'xp-window-controls-icon-maximize'
-                     }`}
+                  className={`xp-window-controls-btn-blue ${
+                     win.status === 'maximized' ? 'xp-window-controls-icon-reduce' : 'xp-window-controls-icon-maximize'
+                  }`}
                   onPointerDown={(e) => e.stopPropagation()}
                   onClick={handleToggleMaximize}
                />
@@ -140,8 +141,9 @@ function Window({ windowId, children }: WindowProps) {
 
    return (
       <div
-         className={`absolute flex flex-col xp-window-frame ${!win.isActive ? 'inactive' : ''} ${isLoading || isMinimized ? 'opacity-0 pointer-events-none' : ''
-            }`}
+         className={`absolute flex flex-col xp-window-frame ${!win.isActive ? 'inactive' : ''} ${
+            isLoading || isMinimized ? 'opacity-0 pointer-events-none' : ''
+         }`}
          style={{
             left: win.position.x,
             top: win.position.y,

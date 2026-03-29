@@ -36,8 +36,14 @@ const IDLE_ANIMATIONS = [
 const AGENT_STORY = [
    { text: "Woof! I'm Rover. Click this bubble to hear my story and learn about Windows XP!", anim: 'Greet' },
    { text: 'I was officially introduced in 2001 as the search companion for Windows XP.', anim: 'Searching' },
-   { text: "But my origins go back to 1995! I was originally created for a project called 'Microsoft Bob'.", anim: 'Thinking' },
-   { text: "With Windows XP, Microsoft brought the colorful 'Luna' theme, making computers much friendlier.", anim: 'LookUp' },
+   {
+      text: "But my origins go back to 1995! I was originally created for a project called 'Microsoft Bob'.",
+      anim: 'Thinking',
+   },
+   {
+      text: "With Windows XP, Microsoft brought the colorful 'Luna' theme, making computers much friendlier.",
+      anim: 'LookUp',
+   },
    { text: 'My job was to sniff out your files and keep you company while you worked.', anim: 'Pleased' },
    { text: "I'll let you explore the desktop now. Just click on me if you want to interact!", anim: 'Acknowledge' },
 ];
@@ -146,6 +152,8 @@ export default function Agent({ name, fps = 10, initialX, initialY }: AgentProps
 
    const idleTimerRef = useRef<number | null>(null);
 
+   const resetIdleTimerRef = useRef<() => void>(() => {});
+
    const resetIdleTimer = useCallback(() => {
       if (idleTimerRef.current !== null) {
          window.clearTimeout(idleTimerRef.current);
@@ -164,9 +172,13 @@ export default function Agent({ name, fps = 10, initialX, initialY }: AgentProps
                playAnimation(randomAnim);
             }
          }
-         resetIdleTimer();
+         resetIdleTimerRef.current();
       }, nextIdleTime);
-   }, [isReady, playAnimation, currentAnimRef]);
+   }, [isReady, playAnimation, currentAnimRef, animationsRef]);
+
+   useEffect(() => {
+      resetIdleTimerRef.current = resetIdleTimer;
+   }, [resetIdleTimer]);
 
    const [position, setPosition] = useState(() => ({
       x: initialX ?? window.innerWidth - 80 - 15,
@@ -189,7 +201,7 @@ export default function Agent({ name, fps = 10, initialX, initialY }: AgentProps
             playAnimation('ClickedOn');
          }
          resetIdleTimer();
-      }
+      },
    });
 
    useEffect(() => {
@@ -229,25 +241,28 @@ export default function Agent({ name, fps = 10, initialX, initialY }: AgentProps
       };
    }, [isReady, playAnimation, resetIdleTimer, fps, animationsRef]);
 
-   const handleBubbleClick = useCallback((e: React.MouseEvent) => {
-      e.stopPropagation();
-      const { isActive, index } = storyStateRef.current;
+   const handleBubbleClick = useCallback(
+      (e: React.MouseEvent) => {
+         e.stopPropagation();
+         const { isActive, index } = storyStateRef.current;
 
-      if (!isActive) return;
+         if (!isActive) return;
 
-      setStoryState((prev) => ({ ...prev, isVisible: false }));
+         setStoryState((prev) => ({ ...prev, isVisible: false }));
 
-      setTimeout(() => {
-         const nextIndex = index + 1;
-         if (nextIndex >= AGENT_STORY.length) {
-            setStoryState({ isActive: false, isVisible: false, index: 0 });
-            playAnimation('RestPose', { loop: true });
-         } else {
-            setStoryState({ isActive: true, isVisible: true, index: nextIndex });
-            playAnimation(AGENT_STORY[nextIndex].anim);
-         }
-      }, 300);
-   }, [playAnimation]);
+         setTimeout(() => {
+            const nextIndex = index + 1;
+            if (nextIndex >= AGENT_STORY.length) {
+               setStoryState({ isActive: false, isVisible: false, index: 0 });
+               playAnimation('RestPose', { loop: true });
+            } else {
+               setStoryState({ isActive: true, isVisible: true, index: nextIndex });
+               playAnimation(AGENT_STORY[nextIndex].anim);
+            }
+         }, 300);
+      },
+      [playAnimation],
+   );
 
    return (
       <div
@@ -267,12 +282,13 @@ export default function Agent({ name, fps = 10, initialX, initialY }: AgentProps
       >
          <div
             onClick={handleBubbleClick}
-            className={`absolute bottom-23.75 right-8.75 w-40 p-2.5 bg-[#fffde1] rounded-xl shadow-[2px_2px_3px_0px_rgba(0,0,0,0.50)] border border-black flex justify-center items-center cursor-pointer transition-all duration-300 transform ${storyState.isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
-               }`}
+            className={`absolute bottom-23.75 right-8.75 w-40 p-2.5 bg-[#fffde1] rounded-xl shadow-[2px_2px_3px_0px_rgba(0,0,0,0.50)] border border-black flex justify-center items-center cursor-pointer transition-all duration-300 transform ${
+               storyState.isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
+            }`}
             style={{ pointerEvents: storyState.isVisible ? 'auto' : 'none' }}
          >
             <div className="text-black text-[11px] font-normal font-tahoma leading-tight text-center relative z-20">
-               {storyState.isActive ? AGENT_STORY[storyState.index].text : "Hello there!"}
+               {storyState.isActive ? AGENT_STORY[storyState.index].text : 'Hello there!'}
             </div>
 
             <div className="absolute -bottom-2.5 right-2.5 w-0 h-0 border-t-10 border-t-black border-l-10 border-l-transparent" />

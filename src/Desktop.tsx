@@ -19,7 +19,7 @@ function DesktopContent() {
 
       play('xp-startup', { volume: 0.5 });
 
-      const isChromium = !!(window as any).chrome;
+      const isChromium = !!(window as unknown as { chrome?: unknown }).chrome;
       if (!isChromium) {
          showWarning(
             'Attention: You are not using a Chromium-based browser. This system has been optimized for browsers such as Google Chrome, Microsoft Edge, or Brave. Some features (such as sound effects and transparencies) may not function correctly.',

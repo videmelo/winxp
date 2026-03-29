@@ -160,15 +160,15 @@ function RightPane({ sections, onLaunch }: { sections: RightPaneItem[][]; onLaun
 function Footer() {
    const { play } = useSound();
    const actions = [
-      { 
-         label: 'Log off', 
+      {
+         label: 'Log off',
          btnClass: 'xp-window-controls-btn-yellow xp-window-controls-icon-logoff',
-         onClick: () => play('xp-logoff-sound')
+         onClick: () => play('xp-logoff-sound'),
       },
-      { 
-         label: 'Turn off', 
+      {
+         label: 'Turn off',
          btnClass: 'xp-window-controls-btn-red xp-window-controls-icon-poweroff',
-         onClick: () => play('xp-shutdown')
+         onClick: () => play('xp-shutdown'),
       },
    ];
 

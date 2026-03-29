@@ -28,21 +28,19 @@ export default function ErrorDialog({ windowId, params }: ErrorDialogProps) {
       }
    }, [type, play]);
 
-   const iconSrc = type === 'warning' 
-      ? '/assets/icons/ui/warning-32.png' 
-      : '/assets/icons/ui/error-32.png';
+   const iconSrc = type === 'warning' ? '/assets/icons/ui/warning-32.png' : '/assets/icons/ui/error-32.png';
 
    return (
       <div className="flex flex-col h-full bg-[#ece9d8] p-3 body-tahoma text-black overflow-hidden shadow-[inset_1px_1px_0px_#ffffff]">
          <div className="flex items-start gap-4 mb-3 px-2 flex-1 min-h-0">
             <img src={iconSrc} alt={type} className="pixelated shrink-0 w-8 h-8 mt-1" />
-            <div className="flex-1 overflow-y-auto min-h-0 pr-2 select-text leading-tight break-words pt-1">
+            <div className="flex-1 overflow-y-auto min-h-0 pr-2 select-text leading-tight wrap-break-word pt-1">
                {message}
             </div>
          </div>
-         
+
          <div className="flex justify-center shrink-0 pt-1 pb-1">
-            <Button onClick={() => closeWindow(windowId)} className="min-w-[75px]">
+            <Button onClick={() => closeWindow(windowId)} className="min-w-18.75">
                OK
             </Button>
          </div>

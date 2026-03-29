@@ -8,16 +8,13 @@ interface SoundOptions {
 }
 
 export function useSound() {
-   const play = useCallback(
-      (name: SoundName, options: SoundOptions = {}) => {
-         const { volume = 1.0, preload = false } = options;
-         if (preload) {
-            SoundManager.preload(name);
-         }
-         return SoundManager.play(name, volume);
-      },
-      []
-   );
+   const play = useCallback((name: SoundName, options: SoundOptions = {}) => {
+      const { volume = 1.0, preload = false } = options;
+      if (preload) {
+         SoundManager.preload(name);
+      }
+      return SoundManager.play(name, volume);
+   }, []);
 
    const stop = useCallback((name: SoundName) => {
       SoundManager.stop(name);

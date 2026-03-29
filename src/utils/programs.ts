@@ -15,7 +15,8 @@ import {
 export type { TitleBarButton, WindowConfig };
 
 export type Program = ProgramMetadata & {
-   exe?: React.FC;
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   exe?: React.ComponentType<any>;
 };
 
 export type Folder = FolderMetadata;

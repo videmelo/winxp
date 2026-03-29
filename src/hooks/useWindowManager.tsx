@@ -27,7 +27,8 @@ export type WindowState = {
    programId: string;
    title: string;
    icon: string;
-   exe?: React.FC<{ windowId: string; onLoaded?: () => void; params?: any }>;
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   exe?: React.ComponentType<any>;
    position: WindowPosition;
    prevPosition: WindowPosition | null;
    size: WindowSize;
@@ -41,6 +42,7 @@ export type WindowState = {
    titleBarButtons: TitleBarButton[];
    resizable: boolean;
    isLoading?: boolean;
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
    params?: any;
 };
 
@@ -48,7 +50,8 @@ export type OpenWindowOptions = {
    programId: string;
    title: string;
    icon: string;
-   exe?: React.FC<{ windowId: string; onLoaded?: () => void; params?: any }>;
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   exe?: React.ComponentType<any>;
    position?: WindowPosition;
    size?: WindowSize;
    minSize?: WindowSize;
@@ -57,6 +60,7 @@ export type OpenWindowOptions = {
    titleBarButtons?: TitleBarButton[];
    resizable?: boolean;
    isLoading?: boolean;
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
    params?: any;
 };
 
@@ -193,13 +197,13 @@ function reducer(state: ManagerState, action: Action): ManagerState {
             windows: state.windows.map((w) =>
                w.id === action.payload.id
                   ? {
-                     ...w,
-                     prevPosition: w.position,
-                     prevSize: w.size,
-                     position: { x: 0, y: 0 },
-                     size: { width: window.innerWidth, height: window.innerHeight - 30 },
-                     status: 'maximized' as WindowStatus,
-                  }
+                       ...w,
+                       prevPosition: w.position,
+                       prevSize: w.size,
+                       position: { x: 0, y: 0 },
+                       size: { width: window.innerWidth, height: window.innerHeight - 30 },
+                       status: 'maximized' as WindowStatus,
+                    }
                   : w,
             ),
          };
@@ -212,13 +216,13 @@ function reducer(state: ManagerState, action: Action): ManagerState {
                state.windows.map((w) =>
                   w.id === action.payload.id
                      ? {
-                        ...w,
-                        position: w.prevPosition ?? w.position,
-                        size: w.prevSize ?? w.size,
-                        prevPosition: null,
-                        prevSize: null,
-                        status: 'normal' as WindowStatus,
-                     }
+                          ...w,
+                          position: w.prevPosition ?? w.position,
+                          size: w.prevSize ?? w.size,
+                          prevPosition: null,
+                          prevSize: null,
+                          status: 'normal' as WindowStatus,
+                       }
                      : w,
                ),
                action.payload.id,
@@ -243,10 +247,10 @@ function reducer(state: ManagerState, action: Action): ManagerState {
                state.windows.map((w) =>
                   w.id === action.payload.id
                      ? {
-                        ...w,
-                        zIndex,
-                        status: w.status === 'minimized' ? (w.prevSize ? 'maximized' : 'normal') : w.status,
-                     }
+                          ...w,
+                          zIndex,
+                          status: w.status === 'minimized' ? (w.prevSize ? 'maximized' : 'normal') : w.status,
+                       }
                      : w,
                ),
                action.payload.id,
@@ -462,6 +466,6 @@ export function useWindowManager() {
    const context = useContext(WindowManagerContext);
    if (!context) {
       throw new Error('useWindowManager must be used within a WindowManagerProvider');
-   } 
+   }
    return context;
 }
